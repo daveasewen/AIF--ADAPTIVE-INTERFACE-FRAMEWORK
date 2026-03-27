@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Interface Landscape — AIF Competitor Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0f0f0f;
+  --near-black: #1c1c1c;
+  --off-black: #333;
+  --gray-dark: #555;
+  --gray-mid: #888;
+  --gray-light: #bbb;
+  --gray-pale: #e4e4e4;
+  --gray-bg: #f6f6f6;
+  --white: #ffffff;
+  --cat-banking: #0d2545;
+  --cat-banking-pale: #edf1f6;
+  --cat-wealth: #1a3d20;
+  --cat-wealth-pale: #ebf0ec;
+  --cat-trading: #3d1515;
+  --cat-trading-pale: #f1ebeb;
+  --aif-bg: #faf7f0;
+  --aif-border: #b8943a;
+  --hyp-color: #888;
+  --doc-color: #2a6a30;
+  --sidebar-w: 264px;
+  --content-max: 800px;
+  --fs-body: 20px;
+  --lh-body: 1.8;
+  --font-body: 'Lora', Georgia, serif;
+  --font-display: 'Playfair Display', 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); color: var(--black); background: var(--white); display: flex; min-height: 100vh; }
+
+/* PROGRESS BAR */
+.progress-bar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 2px; background: var(--black); transform-origin: left; transform: scaleX(0); z-index: 200; transition: transform 0.05s linear; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); min-height: 100vh; position: fixed; top: 0; left: 0; border-right: 1px solid var(--gray-pale); overflow-y: auto; background: var(--white); z-index: 100; display: flex; flex-direction: column; }
+.sidebar-brand { padding: 2rem 1.5rem 1.5rem; border-bottom: 1px solid var(--gray-pale); }
+.sidebar-brand .brand-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-mid); display: block; margin-bottom: 0.35rem; }
+.sidebar-brand strong { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--black); display: block; line-height: 1.25; }
+nav { flex: 1; padding: 1rem 0 2rem; }
+.nav-group { margin-bottom: 0.25rem; }
+.nav-cat-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.8rem 1.5rem 0.3rem; display: block; }
+.nav-cat-label.banking { color: var(--cat-banking); }
+.nav-cat-label.wealth { color: var(--cat-wealth); }
+.nav-cat-label.trading { color: var(--cat-trading); }
+.nav-cat-label.other { color: var(--gray-mid); }
+.nav-link { display: block; padding: 0.28rem 1.5rem 0.28rem 2rem; font-family: var(--font-mono); font-size: 11.5px; color: var(--gray-dark); text-decoration: none; transition: color 0.12s, background 0.12s; border-left: 2px solid transparent; line-height: 1.4; }
+.nav-link:hover { color: var(--black); background: var(--gray-bg); }
+.nav-link.active { color: var(--black); border-left-color: var(--black); }
+.nav-link.top { padding-left: 1.5rem; color: var(--off-black); }
+
+/* MAIN */
+main { margin-left: var(--sidebar-w); flex: 1; }
+
+/* INTRO */
+.intro { max-width: var(--content-max); margin: 0 auto; padding: 5rem 3rem 3.5rem; border-bottom: 1px solid var(--gray-pale); }
+.intro-eyebrow { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 1rem; display: block; }
+.intro h1 { font-family: var(--font-display); font-size: 58px; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+.intro-lead { font-size: 21px; line-height: 1.7; color: var(--near-black); max-width: 620px; margin-bottom: 1.25rem; }
+.intro-body { font-size: 18px; line-height: 1.75; color: var(--off-black); max-width: 620px; margin-bottom: 1rem; }
+.intro-stats { display: flex; gap: 3rem; margin: 2.5rem 0; padding-top: 2rem; border-top: 1px solid var(--gray-pale); }
+.stat-item .stat-num { font-family: var(--font-display); font-size: 42px; font-weight: 700; line-height: 1; display: block; }
+.stat-item .stat-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-dark); }
+
+/* HOW TO READ */
+.how-to-read { background: var(--gray-bg); padding: 1.75rem 2rem; margin-top: 2rem; }
+.how-to-read h4 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 0.75rem; }
+.how-to-read p { font-size: 16.5px; line-height: 1.65; margin-bottom: 0.5rem; color: var(--near-black); }
+.how-to-read p:last-child { margin-bottom: 0; }
+.badge-hyp { display: inline-block; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.5rem; border: 1px dashed var(--hyp-color); color: var(--hyp-color); border-radius: 2px; }
+.badge-doc { display: inline-block; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.15rem 0.5rem; border: 1px solid var(--doc-color); color: var(--doc-color); border-radius: 2px; }
+
+/* CATEGORY SECTIONS */
+.category-section { border-top: 3px solid var(--black); }
+.category-header { max-width: var(--content-max); margin: 0 auto; padding: 3rem 3rem 2rem; }
+.cat-num { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-mid); display: block; margin-bottom: 0.5rem; }
+.category-header h2 { font-family: var(--font-display); font-size: 44px; line-height: 1.1; margin-bottom: 1.25rem; }
+.category-header.banking h2 { color: var(--cat-banking); }
+.category-header.wealth h2 { color: var(--cat-wealth); }
+.category-header.trading h2 { color: var(--cat-trading); }
+.category-header p { font-size: 18px; line-height: 1.7; color: var(--near-black); max-width: 580px; }
+
+/* PROFILES */
+.profile { border-top: 1px solid var(--gray-pale); max-width: var(--content-max); margin: 0 auto; padding: 3rem; }
+.profile-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
+.profile-tags { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.cat-tag { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 2px; }
+.cat-tag.banking { background: var(--cat-banking); color: white; }
+.cat-tag.wealth { background: var(--cat-wealth); color: white; }
+.cat-tag.trading { background: var(--cat-trading); color: white; }
+.confidence { font-family: var(--font-mono); font-size: 10px; color: var(--gray-dark); }
+.profile h3 { font-family: var(--font-display); font-size: 36px; line-height: 1.12; margin-bottom: 0.6rem; }
+.profile-tagline { font-size: 18px; font-style: italic; color: var(--gray-dark); margin-bottom: 2rem; line-height: 1.55; }
+
+/* SCREEN CARD */
+.screen-card { border-radius: 3px; overflow: hidden; margin-bottom: 2.5rem; }
+.screen-card.hyp { border: 1.5px dashed #aaa; }
+.screen-card.doc { border: 1.5px solid var(--gray-pale); box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.screen-badge { display: flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1rem; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.09em; text-transform: uppercase; }
+.screen-badge.hyp { background: #f5f5f5; color: var(--hyp-color); border-bottom: 1px dashed #ccc; }
+.screen-badge.doc { background: #f0f5f0; color: var(--doc-color); border-bottom: 1px solid var(--gray-pale); }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+.screen-badge.hyp .badge-dot { background: var(--hyp-color); }
+.screen-badge.doc .badge-dot { background: var(--doc-color); }
+.screen-diagram { background: white; }
+.screen-diagram svg { display: block; width: 100%; height: auto; }
+.screen-note { padding: 0.55rem 1rem; font-family: var(--font-mono); font-size: 10px; color: var(--gray-mid); border-top: 1px solid #eee; background: #fafafa; line-height: 1.55; }
+
+/* DIMENSIONS */
+.dim { margin-bottom: 1.75rem; }
+.dim h4 { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 0.5rem; }
+.dim p { font-size: 19px; line-height: 1.75; }
+.dim p + p { margin-top: 0.75rem; }
+
+/* AIF BOX */
+.aif-box { background: var(--aif-bg); border-left: 3px solid var(--aif-border); padding: 1.5rem 2rem; margin-top: 2rem; }
+.aif-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--aif-border); display: block; margin-bottom: 0.75rem; }
+.aif-box p { font-size: 18px; line-height: 1.7; margin-bottom: 0.7rem; }
+.aif-box p:last-child { margin-bottom: 0; }
+
+/* MATRIX */
+.cat-matrix { background: var(--gray-bg); border-top: 2px solid var(--black); max-width: var(--content-max); margin: 0 auto; padding: 2.5rem 3rem; }
+.cat-matrix h3 { font-family: var(--font-display); font-size: 26px; margin-bottom: 1.5rem; }
+.matrix-table { width: 100%; border-collapse: collapse; }
+.matrix-table th { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-dark); text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--black); }
+.matrix-table td { padding: 0.7rem 0.75rem; border-bottom: 1px solid var(--gray-pale); font-family: var(--font-mono); font-size: 12px; vertical-align: top; line-height: 1.45; }
+.matrix-table tr:last-child td { border-bottom: none; }
+.matrix-table td:first-child { font-weight: 500; font-size: 12.5px; }
+.scr { display: inline-block; padding: 0.12rem 0.45rem; border-radius: 2px; font-size: 9.5px; letter-spacing: 0.05em; }
+.scr-h { background: #1a3a1a; color: white; }
+.scr-m { background: #444; color: white; }
+.scr-l { background: #ccc; color: #333; }
+.scr-n { background: #eee; color: #888; }
+.matrix-note { font-family: var(--font-mono); font-size: 10px; color: var(--gray-dark); margin-top: 1.25rem; line-height: 1.5; }
+
+/* SYNTHESIS */
+.synthesis { border-top: 3px solid var(--black); max-width: var(--content-max); margin: 0 auto; padding: 3.5rem 3rem; }
+.synthesis h2 { font-family: var(--font-display); font-size: 44px; line-height: 1.1; margin-bottom: 2rem; }
+.synthesis p { font-size: 19px; line-height: 1.8; margin-bottom: 1.25rem; }
+.finding { border-left: 3px solid var(--black); padding: 1.25rem 2rem; margin: 2rem 0; }
+.finding h4 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 0.6rem; }
+.finding p { font-size: 18px; line-height: 1.7; }
+.closing-box { background: var(--black); color: white; padding: 2.5rem; margin-top: 3rem; }
+.closing-box p { font-size: 20px; line-height: 1.7; margin-bottom: 0; }
+.closing-box p + p { margin-top: 1rem; }
+.closing-box em { color: #c8a96e; font-style: normal; }
+
+/* FOOTER */
+.site-footer { max-width: var(--content-max); margin: 0 auto; padding: 2rem 3rem; border-top: 1px solid var(--gray-pale); }
+.site-footer p { font-family: var(--font-mono); font-size: 10px; color: var(--gray-light); }
+
+@media (max-width: 1000px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { display: none; }
+  .progress-bar { left: 0; }
+  main { margin-left: 0; }
+  .intro, .category-header, .profile, .cat-matrix, .synthesis { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-label">AIF Project</span>
+    <strong>The Interface Landscape</strong>
+  </div>
+  <nav>
+    <div class="nav-group">
+      <a href="#intro" class="nav-link top" data-target="intro">Introduction</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-cat-label banking">01 Corporate Banking</span>
+      <a href="#jpmorgan" class="nav-link" data-target="jpmorgan">JPMorgan ACCESS</a>
+      <a href="#citidirect" class="nav-link" data-target="citidirect">CitiDirect BE</a>
+      <a href="#hsbc" class="nav-link" data-target="hsbc">HSBCnet</a>
+      <a href="#barclays" class="nav-link" data-target="barclays">Barclays iPortal</a>
+      <a href="#banking-matrix" class="nav-link" data-target="banking-matrix">Category summary</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-cat-label wealth">02 Wealth Management</span>
+      <a href="#aladdin" class="nav-link" data-target="aladdin">BlackRock Aladdin</a>
+      <a href="#fscloud" class="nav-link" data-target="fscloud">Salesforce FSC</a>
+      <a href="#addepar" class="nav-link" data-target="addepar">Addepar</a>
+      <a href="#wealth-matrix" class="nav-link" data-target="wealth-matrix">Category summary</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-cat-label trading">03 Trading &amp; Markets</span>
+      <a href="#bloomberg" class="nav-link" data-target="bloomberg">Bloomberg Terminal</a>
+      <a href="#lseg" class="nav-link" data-target="lseg">LSEG Workspace</a>
+      <a href="#trading-matrix" class="nav-link" data-target="trading-matrix">Category summary</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-cat-label other">Synthesis</span>
+      <a href="#synthesis" class="nav-link top" data-target="synthesis">Cross-category findings</a>
+    </div>
+  </nav>
+</div>
+
+<!-- MAIN -->
+<main>
+
+<!-- INTRO -->
+<section class="intro" id="intro" data-nav-id="intro">
+  <span class="intro-eyebrow">Competitor Research · March 2026</span>
+  <h1>The Interface Landscape</h1>
+  <p class="intro-lead">A survey of how financial services platforms handle the complexity problem — and what they reveal about the space AIF is entering.</p>
+  <p class="intro-body">Every platform in financial services faces the same structural challenge: the same product must serve radically different users. A CFO and a payment clerk, a senior portfolio manager and a junior analyst, a bond trader and a risk officer — they all touch the same system. Nine products across three sectors show how the market is currently answering that challenge. The pattern is consistent, and consistently incomplete.</p>
+  <p class="intro-body">Research was conducted to the standard set out in the brief: every claim is marked by its evidence basis. Where no public UI evidence exists, diagrams are presented as hypothesis — clearly labelled, with sources stated.</p>
+  <div class="intro-stats">
+    <div class="stat-item"><span class="stat-num">9</span><span class="stat-label">Platforms profiled</span></div>
+    <div class="stat-item"><span class="stat-num">3</span><span class="stat-label">Sectors covered</span></div>
+    <div class="stat-item"><span class="stat-num">4</span><span class="stat-label">Patterns identified</span></div>
+  </div>
+  <div class="how-to-read">
+    <h4>How to read the diagrams</h4>
+    <p>Each profile includes a structural diagram showing the platform's IA — how screens are organised, what controls depth, and where it sits on the Minimal→Maximal scale. These are not screenshots. They are schematic representations of documented structure.</p>
+    <p><span class="badge-hyp">Hypothesis</span> — Diagram is based on documented IA from marketing, press, and product materials. No public screenshots are available. This is especially common in corporate banking, where all major platforms sit behind client walls.</p>
+    <p><span class="badge-doc">Documented</span> — Diagram is based on documented structure with publicly available screenshots or UI walkthroughs to support it. The schematic format is maintained for consistency across all profiles.</p>
+  </div>
+</section>
+
+<!-- ========== CATEGORY 1: CORPORATE BANKING ========== -->
+<section class="category-section" id="cat-banking">
+  <div class="category-header banking">
+    <span class="cat-num">Category 01</span>
+    <h2>Corporate &amp; Transaction Banking</h2>
+    <p>The most direct competitive context for AIF. Four platforms covering cash management, payments, liquidity, and accounts for large corporate clients. The UI evidence is thinner here than anywhere else — all four platforms sit substantially behind client walls.</p>
+  </div>
+
+  <!-- JPMORGAN ACCESS -->
+  <article class="profile" id="jpmorgan" data-nav-id="jpmorgan">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag banking">Corporate Banking</span>
+        <span class="confidence">Confidence: Low–Medium</span>
+      </div>
+    </div>
+    <h3>JPMorgan ACCESS</h3>
+    <p class="profile-tagline">Global treasury and cash management portal. 50+ countries, 120+ currencies. Described by J.P. Morgan as their "#1 ranked digital banking platform" for three consecutive years.</p>
+
+    <div class="screen-card hyp">
+      <div class="screen-badge hyp"><span class="badge-dot"></span>Hypothesis — no public screenshots available</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#fafafa"/>
+          <!-- Nav bar -->
+          <rect x="0" y="0" width="560" height="36" fill="#0d2545"/>
+          <text x="16" y="23" fill="white" style="font-family:monospace;font-size:11px;font-weight:500">J.P. Morgan ACCESS</text>
+          <text x="200" y="23" fill="#8aaccc" style="font-family:monospace;font-size:10px">Home</text>
+          <text x="255" y="23" fill="#8aaccc" style="font-family:monospace;font-size:10px">Payments</text>
+          <text x="330" y="23" fill="#8aaccc" style="font-family:monospace;font-size:10px">Reports</text>
+          <text x="400" y="23" fill="#8aaccc" style="font-family:monospace;font-size:10px">Liquidity</text>
+          <text x="470" y="23" fill="#8aaccc" style="font-family:monospace;font-size:10px">Admin</text>
+          <!-- Alert strip -->
+          <rect x="0" y="36" width="560" height="26" fill="#f8f5ee"/>
+          <text x="16" y="53" fill="#888" style="font-family:monospace;font-size:9px">&#9679; Alert strip — notifications and service updates (always visible)</text>
+          <!-- Widget grid -->
+          <rect x="8" y="70" width="266" height="96" rx="2" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+          <rect x="8" y="70" width="266" height="14" rx="2" fill="#f0f0f0"/>
+          <text x="16" y="81" fill="#555" style="font-family:monospace;font-size:9px">Cash Position Snapshot</text>
+          <text x="16" y="105" fill="#bbb" style="font-family:monospace;font-size:8px">Account balances · prior day · today</text>
+          <text x="16" y="120" fill="#ddd" style="font-family:monospace;font-size:8px">Initiate payment from this widget</text>
+          <text x="16" y="158" fill="#aaa" style="font-family:monospace;font-size:8px;font-style:italic">Visible if entitled</text>
+          
+          <rect x="282" y="70" width="270" height="96" rx="2" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+          <rect x="282" y="70" width="270" height="14" rx="2" fill="#f0f0f0"/>
+          <text x="290" y="81" fill="#555" style="font-family:monospace;font-size:9px">Payment Activity</text>
+          <text x="290" y="105" fill="#bbb" style="font-family:monospace;font-size:8px">Recent U.S. ACH and wire payments</text>
+          <text x="290" y="120" fill="#ddd" style="font-family:monospace;font-size:8px">Status · amounts · initiated by</text>
+          <text x="290" y="158" fill="#aaa" style="font-family:monospace;font-size:8px;font-style:italic">Visible if entitled</text>
+
+          <rect x="8" y="174" width="266" height="36" rx="2" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+          <text x="16" y="196" fill="#aaa" style="font-family:monospace;font-size:9px">Controlled Disbursements — visible if entitled</text>
+          
+          <rect x="282" y="174" width="270" height="36" rx="2" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+          <text x="290" y="196" fill="#aaa" style="font-family:monospace;font-size:9px">Reports Inbox — visible if entitled</text>
+          
+          <!-- Scale bar -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <rect x="18" y="223" width="135" height="2.5" rx="1.25" fill="#0d2545"/>
+          <text x="153" y="221" fill="#0d2545" style="font-family:monospace;font-size:8px">30%</text>
+          <text x="80" y="221" fill="#555" style="font-family:monospace;font-size:8px">← entitlement-restricted</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: J.P. Morgan marketing materials, product guide excerpts (client-gated PDFs describing dashboard widget structure), press releases on entitlement model. UI not publicly accessible.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>A tabbed navigation (Home, Payments, Reports, Liquidity, Admin) with a widget-based home dashboard. Published product guides confirm the home page "provides key information and frequently performed tasks directly accessible" — and that "the widgets displayed depend on your entitlements." Navigation depth is consistent across all user types who can reach it; what changes is which widgets appear.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>The entitlement system is explicitly marketed — "layers of payment security and user entitlements with features like Payment Control and Manager." This is access control, not interface adaptation. A restricted user sees fewer widgets; there is no evidence the system changes how it presents information to that user based on who they are or what they're doing.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>Complexity is managed by restriction. Users see only what they are entitled to see. The 2012 platform redesign reduced entitlement administration from "hours, sometimes days, to minutes" — which tells you how much complexity lives in the admin layer, not in the user experience.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison</span>
+      <p>ACCESS is the clearest example of what the brief calls "restriction vs calibration." The entitlement system is sophisticated and well-built — but it controls access, not presentation. A restricted user gets a smaller version of the full interface rather than a simpler and more appropriate one.</p>
+      <p>AIF's claim here is specific: the widget a payment authoriser sees should look different from the one a treasury analyst sees — same data, different depth and context. ACCESS shows no evidence of this. The system trusts entitlements to do the work of design.</p>
+    </div>
+  </article>
+
+  <!-- CITIDIRECT BE -->
+  <article class="profile" id="citidirect" data-nav-id="citidirect">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag banking">Corporate Banking</span>
+        <span class="confidence">Confidence: Medium — first-party UX articles available</span>
+      </div>
+    </div>
+    <h3>CitiDirect BE</h3>
+    <p class="profile-tagline">Citi's corporate banking platform, currently undergoing a complete UX reengineering. The most publicly documented redesign process in this category — Citi's Head of UX has published detailed accounts of their design methodology.</p>
+
+    <div class="screen-card hyp">
+      <div class="screen-badge hyp"><span class="badge-dot"></span>Hypothesis — based on first-party UX article, not observed production UI</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#fafafa"/>
+          <!-- Two-pane label -->
+          <text x="140" y="18" fill="#666" text-anchor="middle" style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em">Decision-maker view (CFO / Treasurer)</text>
+          <text x="420" y="18" fill="#666" text-anchor="middle" style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em">Operational view (Payments / Receivables)</text>
+          <line x1="280" y1="22" x2="280" y2="205" stroke="#ddd" stroke-width="1" stroke-dasharray="4 3"/>
+
+          <!-- Left pane: CFO view -->
+          <rect x="8" y="26" width="264" height="26" rx="2" fill="#0d2545"/>
+          <text x="140" y="44" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9.5px">Markets &amp; Intelligence</text>
+          <rect x="8" y="58" width="264" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="74" fill="#555" style="font-family:monospace;font-size:9px">Risk overview · Liquidity position</text>
+          <text x="16" y="88" fill="#bbb" style="font-family:monospace;font-size:8px">Strategic signals · Market intelligence</text>
+          <rect x="8" y="104" width="264" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="120" fill="#555" style="font-family:monospace;font-size:9px">Working capital · Optimisation</text>
+          <text x="16" y="134" fill="#bbb" style="font-family:monospace;font-size:8px">FX exposure · Forecasting</text>
+          <rect x="8" y="150" width="264" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="166" fill="#555" style="font-family:monospace;font-size:9px">Decisions &amp; Approvals</text>
+          <text x="16" y="180" fill="#bbb" style="font-family:monospace;font-size:8px">High-value sign-off · Compliance view</text>
+          <text x="140" y="202" fill="#0d2545" text-anchor="middle" style="font-family:monospace;font-size:8px">Persona: strategic decision-maker</text>
+
+          <!-- Right pane: Operational view -->
+          <rect x="288" y="26" width="264" height="26" rx="2" fill="#1a3050"/>
+          <text x="420" y="44" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9.5px">Today's task queue</text>
+          <rect x="288" y="58" width="264" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="296" y="74" fill="#555" style="font-family:monospace;font-size:9px">Payments — initiate · authorise · track</text>
+          <text x="296" y="88" fill="#bbb" style="font-family:monospace;font-size:8px">U.S. ACH · Wire · Global ACH</text>
+          <rect x="288" y="104" width="264" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="296" y="120" fill="#555" style="font-family:monospace;font-size:9px">Receivables · Account reconciliation</text>
+          <text x="296" y="134" fill="#bbb" style="font-family:monospace;font-size:8px">One screen per journey (not multi-screen)</text>
+          <rect x="288" y="150" width="264" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="296" y="166" fill="#555" style="font-family:monospace;font-size:9px">Reporting — top in-demand reports first</text>
+          <text x="296" y="180" fill="#bbb" style="font-family:monospace;font-size:8px">Conversational report builder available</text>
+          <text x="420" y="202" fill="#1a3050" text-anchor="middle" style="font-family:monospace;font-size:8px">Persona: operational — payments · receivables</text>
+
+          <!-- Scale bar -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <rect x="18" y="223" width="216" height="2.5" rx="1.25" fill="#0d2545"/>
+          <text x="234" y="221" fill="#0d2545" style="font-family:monospace;font-size:8px">48%</text>
+          <text x="80" y="221" fill="#555" style="font-family:monospace;font-size:8px">← persona-mapped, manually maintained</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: First-party UX article by Citi's Head of UX, Digital Channels (published on citibank.com/tts). Describes design intent and methodology in detail. Production UI not confirmed — the article describes the redesign in progress, not necessarily final shipped state.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>The legacy platform had 600 menu items. The redesign reduces this by surfacing only the items needed for a given user's journey — building the navigation around tasks rather than features. A CFO logs in to strategic intelligence and decisions. An operational user logs in to task queues and process flows. Same underlying platform; genuinely different home experiences.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>The clearest example of persona-driven design in this category. Citi's UX team explicitly mapped separate journeys for "decision-makers" and "operational users" and programmed different interfaces for each. The insight driving this: designers observed what users actually do (not what they say they want) and built around dominant usage patterns. 80% of clients have 6–7 accounts, so that's what the default view shows.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>The Citi team articulates the same problem AIF is designed to solve — "the art of creating simplicity without reducing capability." Their answer is journey-mapping: pre-build the right interface for each persona, then maintain it. This works well until a new persona emerges that the design team hasn't anticipated. The complexity lives in the UX team's maintenance workload, not in the system architecture.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison — closest competitor in category</span>
+      <p>CitiDirect is the most conceptually aligned platform in this research. Both AIF and CitiDirect identify the same problem (different users need different interfaces) and share the same instinct (the home experience should reflect who the user is). The critical difference is architectural.</p>
+      <p>CitiDirect's solution is a designed one: humans have built two different interface states and will maintain them as roles evolve. AIF's solution is structural: the framework infers appropriate depth from context, and scales to roles it was never explicitly designed for. CitiDirect's approach is brittle at scale; AIF's isn't.</p>
+    </div>
+  </article>
+
+  <!-- HSBC -->
+  <article class="profile" id="hsbc" data-nav-id="hsbc">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag banking">Corporate Banking</span>
+        <span class="confidence">Confidence: Low–Medium (LMD: Medium — video transcript available)</span>
+      </div>
+    </div>
+    <h3>HSBCnet / GLCM</h3>
+    <p class="profile-tagline">HSBC's global banking platform for corporate and institutional clients. Global Liquidity and Cash Management sits within HSBCnet — but its specialist tools operate as separate portals accessed via single sign-on.</p>
+
+    <div class="screen-card hyp">
+      <div class="screen-badge hyp"><span class="badge-dot"></span>Hypothesis (HSBCnet main) · Documented structure (Liquidity Management Dashboard)</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#fafafa"/>
+
+          <!-- Left: HSBCnet main (narrow, minimal) -->
+          <rect x="8" y="8" width="228" height="26" rx="2" fill="#cc0000"/>
+          <text x="122" y="26" fill="white" text-anchor="middle" style="font-family:monospace;font-size:10px;font-weight:500">HSBCnet</text>
+          <rect x="8" y="40" width="228" height="36" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="56" fill="#555" style="font-family:monospace;font-size:9px">Account overview</text>
+          <text x="16" y="68" fill="#bbb" style="font-family:monospace;font-size:8px">Balances · transactions</text>
+          <rect x="8" y="82" width="228" height="28" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="100" fill="#555" style="font-family:monospace;font-size:9px">Payments navigation</text>
+          <rect x="8" y="116" width="228" height="28" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="134" fill="#555" style="font-family:monospace;font-size:9px">Reporting navigation</text>
+          <!-- Portal link button -->
+          <rect x="8" y="152" width="228" height="24" rx="2" fill="#f0f0f0" stroke="#cc0000" stroke-width="1" stroke-dasharray="3 2"/>
+          <text x="122" y="168" fill="#cc0000" text-anchor="middle" style="font-family:monospace;font-size:9px">→ Liquidity Management Portal</text>
+
+          <!-- Arrow -->
+          <line x1="248" y1="100" x2="272" y2="100" stroke="#888" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <defs>
+            <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#888"/>
+            </marker>
+          </defs>
+          <text x="260" y="92" fill="#888" text-anchor="middle" style="font-family:monospace;font-size:7.5px">SSO</text>
+
+          <!-- Right: LMD (richer) -->
+          <rect x="280" y="8" width="272" height="26" rx="2" fill="#1c1c4a"/>
+          <text x="416" y="26" fill="white" text-anchor="middle" style="font-family:monospace;font-size:10px;font-weight:500">Liquidity Management Dashboard</text>
+          <rect x="280" y="40" width="272" height="30" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="288" y="54" fill="#555" style="font-family:monospace;font-size:9px">Liquidity KPI summary</text>
+          <text x="288" y="66" fill="#bbb" style="font-family:monospace;font-size:8px">Consolidated global view · real-time</text>
+          <rect x="280" y="76" width="134" height="54" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="288" y="92" fill="#555" style="font-family:monospace;font-size:9px">Chart: balances over time</text>
+          <text x="288" y="106" fill="#bbb" style="font-family:monospace;font-size:8px">Configurable period</text>
+          <rect x="418" y="76" width="134" height="54" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="426" y="92" fill="#555" style="font-family:monospace;font-size:9px">Pooling structures</text>
+          <text x="426" y="106" fill="#bbb" style="font-family:monospace;font-size:8px">Concentration / notional</text>
+          <rect x="280" y="136" width="272" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="288" y="152" fill="#555" style="font-family:monospace;font-size:9px">Drill-down: global → region → account</text>
+          <text x="288" y="164" fill="#bbb" style="font-family:monospace;font-size:8px">Permissions required · personalizable view</text>
+          <text x="416" y="192" fill="#888" text-anchor="middle" style="font-family:monospace;font-size:8px;font-style:italic">Separate portal — permission-gated access</text>
+
+          <!-- Scale bar (showing two markers) -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <!-- Main platform range -->
+          <rect x="18" y="222" width="75" height="4.5" rx="2.25" fill="#cc000066"/>
+          <text x="18" y="221" fill="#cc0000" style="font-family:monospace;font-size:7px">Main: ~18%</text>
+          <!-- LMD range -->
+          <rect x="222" y="222" width="90" height="4.5" rx="2.25" fill="#1c1c4a99"/>
+          <text x="222" y="221" fill="#1c1c4a" style="font-family:monospace;font-size:7px">LMD: ~62%</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: HSBC marketing materials, LMD user guide (publicly accessible PDF), LMD video transcript (hsbcnet.com). Main HSBCnet dashboard is client-gated. LMD structure is directly observed from user guide and transcript.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>HSBCnet follows a portal-plus-specialist-tools model. The main platform handles general access: account overview, payments navigation, reporting. Specialist functions — liquidity management, cash flow forecasting, investment solutions — exist as separate portals accessed via single sign-on. Each portal has its own depth model. The platform's coherence is single authentication, not unified surface.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>Permission-based visibility. The LMD user guide states plainly: "Liquidity dashboard is only visible to users that have the appropriate permissions." Users without permissions don't see a simpler version — they don't see the LMD at all. Personalisation within the LMD (chart order, filters, decimal formats) is user-configured, not system-inferred.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>Segmentation. Each functional area gets its own portal with its own depth model. This keeps individual portals manageable, but multiplies the total number of surfaces the organisation must maintain — and multiplies the number of contexts a user must learn to navigate.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison</span>
+      <p>The LMD is genuinely well-designed within its scope — real-time data, excellent drill-down from global to account, configurable view. The problem is structural: it exists separately from the platform it should be part of.</p>
+      <p>AIF's direct argument against this model is the multi-portal proliferation problem. Every new specialist function requires a new portal. Each portal diverges from the others over time. AIF's four operational areas (Payments, Accounts, Admin, Liquidity) propose to contain all of this in one adaptive surface — so a user moving from cash oversight to payment authorisation is navigating sections, not products.</p>
+    </div>
+  </article>
+
+  <!-- BARCLAYS -->
+  <article class="profile" id="barclays" data-nav-id="barclays">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag banking">Corporate Banking</span>
+        <span class="confidence">Confidence: Low–Medium</span>
+      </div>
+    </div>
+    <h3>Barclays iPortal</h3>
+    <p class="profile-tagline">Barclays Corporate's digital banking platform, built from scratch rather than retrofitted from legacy systems. Described at launch as "another major step towards simplifying and personalising the experience." Used by 139,000+ clients.</p>
+
+    <div class="screen-card hyp">
+      <div class="screen-badge hyp"><span class="badge-dot"></span>Hypothesis — no public screenshots of full interface</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#fafafa"/>
+
+          <!-- iPortal left -->
+          <rect x="8" y="8" width="248" height="26" rx="2" fill="#00395d"/>
+          <text x="132" y="26" fill="white" text-anchor="middle" style="font-family:monospace;font-size:10px;font-weight:500">Barclays iPortal</text>
+          <!-- Relationship overview -->
+          <rect x="8" y="40" width="248" height="36" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="56" fill="#555" style="font-family:monospace;font-size:9px">Relationship overview</text>
+          <text x="16" y="68" fill="#bbb" style="font-family:monospace;font-size:8px">All accounts · balances at a glance</text>
+          <!-- Worklist -->
+          <rect x="8" y="82" width="248" height="52" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="98" fill="#555" style="font-family:monospace;font-size:9px">Consolidated worklist</text>
+          <rect x="16" y="104" width="170" height="8" rx="1" fill="#f0f0f0"/>
+          <rect x="16" y="116" width="140" height="8" rx="1" fill="#f0f0f0"/>
+          <!-- Alerts -->
+          <rect x="8" y="140" width="248" height="28" rx="2" fill="#fff8e8" stroke="#e0c060" stroke-width="1"/>
+          <text x="16" y="158" fill="#888" style="font-family:monospace;font-size:9px">Alerts · fraud · pending transactions</text>
+          <!-- Barclays.Net button -->
+          <rect x="8" y="175" width="248" height="22" rx="2" fill="#00395d" stroke="none"/>
+          <text x="132" y="190" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9px">→ Payments &amp; Reporting (Barclays.Net)</text>
+
+          <!-- Arrow -->
+          <line x1="262" y1="110" x2="286" y2="110" stroke="#888" stroke-width="1.5" marker-end="url(#arrowhead2)"/>
+          <defs>
+            <marker id="arrowhead2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#888"/>
+            </marker>
+          </defs>
+          <text x="274" y="102" fill="#888" text-anchor="middle" style="font-family:monospace;font-size:7.5px">linked</text>
+
+          <!-- Barclays.Net right -->
+          <rect x="294" y="8" width="258" height="26" rx="2" fill="#555"/>
+          <text x="423" y="26" fill="white" text-anchor="middle" style="font-family:monospace;font-size:10px;font-weight:500">Barclays.Net</text>
+          <rect x="294" y="40" width="258" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="302" y="56" fill="#555" style="font-family:monospace;font-size:9px">Payments — initiate · manage · approve</text>
+          <text x="302" y="68" fill="#bbb" style="font-family:monospace;font-size:8px">International · domestic · standing orders</text>
+          <rect x="294" y="86" width="258" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="302" y="102" fill="#555" style="font-family:monospace;font-size:9px">Reporting — statements · transactions</text>
+          <text x="302" y="114" fill="#bbb" style="font-family:monospace;font-size:8px">Custom reports · detailed activity</text>
+          <rect x="294" y="132" width="258" height="40" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="302" y="148" fill="#555" style="font-family:monospace;font-size:9px">Virtual accounts · FX · Trade</text>
+          <text x="302" y="160" fill="#bbb" style="font-family:monospace;font-size:8px">Full operational depth</text>
+          <text x="423" y="192" fill="#888" text-anchor="middle" style="font-family:monospace;font-size:8px;font-style:italic">Separate platform — accessed via iPortal nav</text>
+
+          <!-- Scale bar (two markers) -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <rect x="18" y="222" width="60" height="4.5" rx="2.25" fill="#00395d99"/>
+          <text x="18" y="221" fill="#00395d" style="font-family:monospace;font-size:7px">iPortal: ~15%</text>
+          <rect x="222" y="222" width="108" height="4.5" rx="2.25" fill="#55555599"/>
+          <text x="264" y="221" fill="#555" style="font-family:monospace;font-size:7px">Barclays.Net: ~58%</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: Barclays Corporate product pages, iPortal launch press release, Barclays Corporate mobile app description (App Store / Google Play). UI not publicly accessible. Architecture inferred from published product descriptions.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>iPortal functions as an authenticated hub rather than an integrated operational surface. The home screen provides a relationship overview (balances, accounts), a consolidated worklist of pending tasks, and alerts. Operational depth — payments, detailed reporting, virtual accounts — lives in Barclays.Net, a linked platform accessed via a button in the iPortal navigation. Two products, one login.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>Entitlement-controlled access, similar to the rest of the category. The mobile app description explicitly states that "entitlement rights can be given to you by your system administrator." The iPortal home is deliberately light — it was designed as an approval and overview surface, not a full operational one.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>Architectural separation. iPortal's simplicity comes from scope-limiting: it does less, and does it cleanly. The operational complexity is delegated to Barclays.Net. The prior experience — "disparate, complex and outdated systems that require multiple logins" — has been improved to single login, but not to single surface.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison</span>
+      <p>iPortal is the hub-and-spoke answer to the problem AIF solves with a single adaptive surface. Barclays solved the login problem; they didn't solve the coherence problem. A user who checks their overall position in iPortal and then needs to initiate a payment is switching to a different product, not moving to a different section of the same one.</p>
+      <p>AIF's dashboard functioning as both an overview for a restricted user and an operational home for a full user — without ever becoming a different product — is the architectural argument against the iPortal model.</p>
+    </div>
+  </article>
+
+  <!-- BANKING MATRIX -->
+  <div class="cat-matrix" id="banking-matrix" data-nav-id="banking-matrix">
+    <h3>Category 1 summary</h3>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Role-awareness</th>
+          <th>IA adaptability</th>
+          <th>Complexity handling</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>JPMorgan ACCESS</td>
+          <td><span class="scr scr-l">Low</span> Entitlements gate access; no layout adaptation</td>
+          <td><span class="scr scr-n">None</span> Fixed widget grid</td>
+          <td>Restriction model</td>
+        </tr>
+        <tr>
+          <td>CitiDirect BE</td>
+          <td><span class="scr scr-m">Medium</span> Persona-mapped homes — CFO vs operational</td>
+          <td><span class="scr scr-m">Medium</span> Journey-based section assembly</td>
+          <td>Designed adaptation — manually maintained</td>
+        </tr>
+        <tr>
+          <td>HSBCnet / GLCM</td>
+          <td><span class="scr scr-l">Low</span> Permission show/hide; LMD is specialist-only</td>
+          <td><span class="scr scr-l">Low</span> Portal-per-function model</td>
+          <td>Segmentation — multiple portals</td>
+        </tr>
+        <tr>
+          <td>Barclays iPortal</td>
+          <td><span class="scr scr-l">Low</span> Entitlement-gated; hub is deliberately minimal</td>
+          <td><span class="scr scr-n">None</span> Two separate products</td>
+          <td>Architectural separation — hub + tool</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="matrix-note">Confidence note: All scores are constrained by limited public UI evidence. CitiDirect scores benefit from first-party UX articles. All others are inferred from marketing and press materials.</p>
+  </div>
+</section>
+
+<!-- ========== CATEGORY 2: WEALTH MANAGEMENT ========== -->
+<section class="category-section" id="cat-wealth">
+  <div class="category-header wealth">
+    <span class="cat-num">Category 02</span>
+    <h2>Wealth &amp; Asset Management</h2>
+    <p>Three platforms serving advisors, portfolio managers, and their clients. More publicly documented than corporate banking — marketing screenshots exist for all three. The design philosophy here is more sophisticated, and the AIF comparison more nuanced.</p>
+  </div>
+
+  <!-- ALADDIN -->
+  <article class="profile" id="aladdin" data-nav-id="aladdin">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag wealth">Wealth Management</span>
+        <span class="confidence">Confidence: Medium — client-gated; engineering blog available</span>
+      </div>
+    </div>
+    <h3>BlackRock Aladdin</h3>
+    <p class="profile-tagline">Investment management and risk analytics platform serving ~$25 trillion in assets. Originally internal risk tooling, now licensed to 500+ institutional clients globally. The platform runs "one system, one database, one process" — but achieves this through a family of specialised applications, not a single unified surface.</p>
+
+    <div class="screen-card hyp">
+      <div class="screen-badge hyp"><span class="badge-dot"></span>Hypothesis — client-gated; based on engineering blog and marketing materials</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#fafafa"/>
+          <text x="280" y="18" text-anchor="middle" fill="#666" style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em">One database — multiple specialist applications</text>
+          <!-- App tiles -->
+          <rect x="8" y="26" width="130" height="74" rx="3" fill="white" stroke="#1a3d20" stroke-width="1.5"/>
+          <rect x="8" y="26" width="130" height="20" rx="3" fill="#1a3d20"/>
+          <text x="73" y="40" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9px">Portfolio Manager</text>
+          <text x="16" y="64" fill="#555" style="font-family:monospace;font-size:8.5px">Risk analytics</text>
+          <text x="16" y="77" fill="#555" style="font-family:monospace;font-size:8.5px">Performance attribution</text>
+          <text x="16" y="90" fill="#555" style="font-family:monospace;font-size:8.5px">Order modelling</text>
+
+          <rect x="146" y="26" width="130" height="74" rx="3" fill="white" stroke="#1a3d20" stroke-width="1.5"/>
+          <rect x="146" y="26" width="130" height="20" rx="3" fill="#1a3d20"/>
+          <text x="211" y="40" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9px">Risk Manager</text>
+          <text x="154" y="64" fill="#555" style="font-family:monospace;font-size:8.5px">Stress testing</text>
+          <text x="154" y="77" fill="#555" style="font-family:monospace;font-size:8.5px">Scenario analysis</text>
+          <text x="154" y="90" fill="#555" style="font-family:monospace;font-size:8.5px">Risk decomposition</text>
+
+          <rect x="284" y="26" width="130" height="74" rx="3" fill="white" stroke="#1a3d20" stroke-width="1.5"/>
+          <rect x="284" y="26" width="130" height="20" rx="3" fill="#1a3d20"/>
+          <text x="349" y="40" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9px">Trader</text>
+          <text x="292" y="64" fill="#555" style="font-family:monospace;font-size:8.5px">Order management</text>
+          <text x="292" y="77" fill="#555" style="font-family:monospace;font-size:8.5px">Execution routing</text>
+          <text x="292" y="90" fill="#555" style="font-family:monospace;font-size:8.5px">Trade compliance</text>
+
+          <rect x="422" y="26" width="130" height="74" rx="3" fill="white" stroke="#1a3d20" stroke-width="1.5"/>
+          <rect x="422" y="26" width="130" height="20" rx="3" fill="#1a3d20"/>
+          <text x="487" y="40" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9px">Compliance / Ops</text>
+          <text x="430" y="64" fill="#555" style="font-family:monospace;font-size:8.5px">Regulatory reporting</text>
+          <text x="430" y="77" fill="#555" style="font-family:monospace;font-size:8.5px">Reconciliation</text>
+          <text x="430" y="90" fill="#555" style="font-family:monospace;font-size:8.5px">Operational workflows</text>
+
+          <!-- Shared data layer -->
+          <rect x="8" y="110" width="544" height="28" rx="2" fill="#e8f0e8" stroke="#1a3d20" stroke-width="1"/>
+          <text x="280" y="129" text-anchor="middle" fill="#1a3d20" style="font-family:monospace;font-size:9.5px;font-weight:500">Shared data layer — one database, one calculation engine, one source of truth</text>
+
+          <!-- Addison AI layer -->
+          <rect x="8" y="146" width="544" height="24" rx="2" fill="#f5f0ff" stroke="#7c4dff" stroke-width="1" stroke-dasharray="4 2"/>
+          <text x="280" y="162" text-anchor="middle" fill="#7c4dff" style="font-family:monospace;font-size:9px">Addison AI (2025) — context-aware assistant, knows which view you're in</text>
+
+          <!-- Scale bar -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <rect x="18" y="223" width="382" height="2.5" rx="1.25" fill="#1a3d20"/>
+          <text x="400" y="221" fill="#1a3d20" style="font-family:monospace;font-size:8px">85%</text>
+          <text x="80" y="221" fill="#555" style="font-family:monospace;font-size:8px">← always maximal within each app</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: BlackRock engineering blog (design systems article), Aladdin marketing pages (role-specific benefit pages for Portfolio Managers, Risk Managers, Traders), Wikipedia (factual), Waters Technology BST Awards 2023. Public screenshots not available. Aladdin Wealth screenshots publicly available — institutional Aladdin is client-gated.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>Aladdin is a family of applications sharing a common design system and a single data layer. A portfolio manager and a risk manager access different Aladdin applications — purpose-built for each function — not different views of the same surface. "One system, one database" refers to data architecture, not interface architecture. The BlackRock engineering team has published a detailed account of building and maintaining a shared component library across all Aladdin applications.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>Strongly differentiated by application. Portfolio managers, risk managers, traders, compliance teams, and operations staff each access a distinct Aladdin application tuned to their workflows. Role-based access control determines which applications a user can open. The 2024 segmentation of Aladdin Wealth into "Vision" (management-facing) and "Focus" (advisor-facing) confirms that even within a single user type, BlackRock found differentiation necessary.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>Specialisation. Build the right tool for each function; let the shared data layer provide coherence. The Addison AI assistant (launched late 2025) adds a context-aware natural language layer — it knows which portfolio view the user is currently in and surfaces contextually relevant answers. This is AI as a complexity mediator: rather than redesigning the interface, add an intelligent layer on top.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison</span>
+      <p>Aladdin operates at a different scale and in a different domain from AIF's target product. But the structural question is identical: how do you serve radically different users with the same underlying data? Aladdin's answer — specialised applications per function — delivers deep, purpose-built tools but fragments the experience. A CIO who needs cross-functional visibility is navigating between products.</p>
+      <p>The Addison AI assistant points in the same direction as AIF's frontier horizon. Context-aware assistance that already knows what you're looking at is exactly the instinct behind AIF's adaptive surface. The difference: Addison is layered on top of a fixed architecture. AIF builds context-awareness into the architecture from the start.</p>
+    </div>
+  </article>
+
+  <!-- SALESFORCE FSC -->
+  <article class="profile" id="fscloud" data-nav-id="fscloud">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag wealth">Wealth Management</span>
+        <span class="confidence">Confidence: High — publicly documented, marketing screenshots available</span>
+      </div>
+    </div>
+    <h3>Salesforce Financial Services Cloud</h3>
+    <p class="profile-tagline">CRM platform built on Salesforce's Lightning infrastructure and extended with financial services-specific data models, workflows, and components. Widely deployed at wealth managers, banks, and insurers. The most thoroughly documented product in this research.</p>
+
+    <div class="screen-card doc">
+      <div class="screen-badge doc"><span class="badge-dot"></span>Documented structure — public screenshots available</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#f8f8f8"/>
+          <!-- Left nav (Lightning persistent) -->
+          <rect x="0" y="0" width="52" height="210" fill="#1a3d20"/>
+          <text x="26" y="42" fill="#7ab87a" text-anchor="middle" style="font-family:monospace;font-size:8px">Home</text>
+          <text x="26" y="72" fill="#7ab87a" text-anchor="middle" style="font-family:monospace;font-size:8px">Clients</text>
+          <text x="26" y="102" fill="#7ab87a" text-anchor="middle" style="font-family:monospace;font-size:8px">Tasks</text>
+          <text x="26" y="132" fill="#7ab87a" text-anchor="middle" style="font-family:monospace;font-size:8px">Reports</text>
+          <text x="26" y="162" fill="#7ab87a" text-anchor="middle" style="font-family:monospace;font-size:8px">Goals</text>
+
+          <!-- Admin config indicator -->
+          <rect x="56" y="4" width="500" height="20" rx="2" fill="#e8f0e8" stroke="#1a3d2055" stroke-width="1"/>
+          <text x="306" y="17" text-anchor="middle" fill="#1a3d20" style="font-family:monospace;font-size:8.5px">Role-based layouts configured by Salesforce Administrator · determines what follows</text>
+
+          <!-- Home dashboard (Lightning) -->
+          <rect x="56" y="30" width="500" height="24" rx="2" fill="#1a3d20"/>
+          <text x="306" y="47" fill="white" text-anchor="middle" style="font-family:monospace;font-size:9.5px">Home dashboard (Lightning — configurable per role)</text>
+
+          <!-- Home widgets -->
+          <rect x="56" y="60" width="164" height="48" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="64" y="76" fill="#555" style="font-family:monospace;font-size:8.5px">Book of business</text>
+          <text x="64" y="90" fill="#bbb" style="font-family:monospace;font-size:8px">AUM · account count · activity</text>
+          <rect x="228" y="60" width="164" height="48" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="236" y="76" fill="#555" style="font-family:monospace;font-size:8.5px">Tasks &amp; activity</text>
+          <text x="236" y="90" fill="#bbb" style="font-family:monospace;font-size:8px">Upcoming meetings · outstanding</text>
+          <rect x="400" y="60" width="156" height="48" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="408" y="76" fill="#555" style="font-family:monospace;font-size:8.5px">Alerts</text>
+          <text x="408" y="90" fill="#bbb" style="font-family:monospace;font-size:8px">Life events · thresholds</text>
+
+          <!-- Client record page -->
+          <rect x="56" y="116" width="500" height="16" rx="2" fill="#444"/>
+          <text x="306" y="128" fill="white" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Client record page — always: Highlights → Detail → Related</text>
+          <rect x="56" y="138" width="500" height="18" rx="2" fill="#f5f5f5" stroke="#ddd" stroke-width="1"/>
+          <text x="306" y="151" fill="#555" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Highlights panel — key summary: AUM, last contact, goals status</text>
+          <rect x="56" y="162" width="236" height="32" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="64" y="178" fill="#555" style="font-family:monospace;font-size:8.5px">Financial accounts · goals · life events</text>
+          <rect x="300" y="162" width="256" height="32" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="308" y="178" fill="#555" style="font-family:monospace;font-size:8.5px">Relationship map · referrals · household</text>
+
+          <!-- Scale bar -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <!-- Range: admin-configured -->
+          <rect x="135" y="222" width="126" height="4.5" rx="2.25" fill="#1a3d2099"/>
+          <text x="135" y="221" fill="#1a3d20" style="font-family:monospace;font-size:7px">Admin-configured range: ~32–60%</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: Salesforce product documentation, third-party implementation guides, Salesforce marketing screenshots (salesforce.com/financial-services). Structural diagram reflects documented Lightning platform architecture. Public screenshots available at salesforce.com.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>FSC inherits Salesforce Lightning's IA: a persistent left navigation giving access to objects and apps, a configurable home dashboard, and record detail pages structured as highlights → sections → related records. The financial services-specific additions are primarily at the data model level: household objects, financial accounts, life events, goals, action plans. These extend what you can see; they don't change the structural hierarchy.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>Admin-configured and genuinely effective — when the configuration is done well. Salesforce's platform allows different page layouts, home dashboards, and navigation items for different user profiles. A branch manager sees team performance; a compliance officer sees exception queues; an advisor sees their book of business. The platform can deliver real role differentiation. But it requires a skilled administrator to build it, and it breaks when roles change or new ones emerge.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>Configuration. Every FSC deployment looks different because every configuration team has made different choices. The platform's power and its limitation are the same thing: it is deeply customisable, which means the quality of the experience depends entirely on who configured it. Einstein Copilot (Salesforce's AI assistant) is positioned as a natural language interface to reduce the need to navigate configured record structures — the same AI-as-workaround pattern appearing in every category.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison</span>
+      <p>FSC's configured role-awareness is the manual equivalent of what AIF does structurally. An excellent FSC implementation achieves role-differentiated interfaces — but a Salesforce administrator built and maintains them. AIF's claim is that role-awareness should be structural, not administrative.</p>
+      <p>FSC's three-tier record page (highlights → detail → related) is structurally parallel to AIF's alert strip → action grid → work surface model, but applied at the record level rather than the platform level. AIF extends this hierarchy to the entire surface.</p>
+    </div>
+  </article>
+
+  <!-- ADDEPAR -->
+  <article class="profile" id="addepar" data-nav-id="addepar">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag wealth">Wealth Management</span>
+        <span class="confidence">Confidence: Medium–High — design philosophy documented; screenshots available</span>
+      </div>
+    </div>
+    <h3>Addepar</h3>
+    <p class="profile-tagline">Portfolio management and reporting platform for wealth managers, RIAs, and family offices. $7 trillion in assets, 1,200+ client firms. Addepar publishes more about its design philosophy than any other product in this research — and that philosophy aligns closely with AIF's theory.</p>
+
+    <div class="screen-card doc">
+      <div class="screen-badge doc"><span class="badge-dot"></span>Documented structure — public screenshots and design articles available</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#f8f8f8"/>
+          <text x="280" y="16" text-anchor="middle" fill="#555" style="font-family:monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em">Three surfaces — same platform, different depth</text>
+
+          <!-- Dashboard home (new 2024) -->
+          <rect x="8" y="24" width="170" height="16" rx="2" fill="#2d5016"/>
+          <text x="93" y="36" fill="white" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Dashboard Home (2024)</text>
+          <rect x="8" y="46" width="170" height="64" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="62" fill="#555" style="font-family:monospace;font-size:8.5px">User-built widget canvas</text>
+          <rect x="16" y="68" width="80" height="16" rx="1" fill="#f0f0f0"/>
+          <rect x="102" y="68" width="68" height="16" rx="1" fill="#f0f0f0"/>
+          <rect x="16" y="90" width="154" height="14" rx="1" fill="#f0f0f0"/>
+          <text x="16" y="124" fill="#aaa" style="font-family:monospace;font-size:8px">Drag-and-drop · resizable</text>
+          <text x="93" y="136" fill="#2d5016" text-anchor="middle" style="font-family:monospace;font-size:8px;font-style:italic">User-configured</text>
+
+          <!-- Portfolio view (center) -->
+          <rect x="190" y="24" width="185" height="16" rx="2" fill="#1a3d20"/>
+          <text x="282" y="36" fill="white" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Portfolio record view</text>
+          <rect x="190" y="46" width="185" height="24" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="198" y="62" fill="#555" style="font-family:monospace;font-size:8.5px">AUM · performance summary</text>
+          <rect x="190" y="76" width="185" height="30" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="198" y="93" fill="#555" style="font-family:monospace;font-size:8.5px">Holdings · attribution · analytics</text>
+          <rect x="190" y="112" width="185" height="24" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="198" y="128" fill="#555" style="font-family:monospace;font-size:8.5px">Drill-down: account → transaction</text>
+          <text x="282" y="148" fill="#1a3d20" text-anchor="middle" style="font-family:monospace;font-size:8px;font-style:italic">Advisor interface — full depth</text>
+
+          <!-- Client portal (simplified) -->
+          <rect x="387" y="24" width="165" height="16" rx="2" fill="#888"/>
+          <text x="469" y="36" fill="white" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Client portal</text>
+          <rect x="387" y="46" width="165" height="24" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="395" y="62" fill="#555" style="font-family:monospace;font-size:8.5px">Portfolio value · summary</text>
+          <rect x="387" y="76" width="165" height="24" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="395" y="92" fill="#555" style="font-family:monospace;font-size:8.5px">Performance overview (simplified)</text>
+          <text x="469" y="120" fill="#888" text-anchor="middle" style="font-family:monospace;font-size:8px;font-style:italic">Separate surface · read-only</text>
+
+          <!-- Addison AI layer -->
+          <rect x="8" y="156" width="544" height="22" rx="2" fill="#f0f0ff" stroke="#7c4dff" stroke-width="1" stroke-dasharray="4 2"/>
+          <text x="280" y="171" text-anchor="middle" fill="#7c4dff" style="font-family:monospace;font-size:9px">Addison AI — context-aware assistant. Knows which portfolio view you're currently in.</text>
+
+          <!-- Scale bar -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <!-- Client portal range -->
+          <rect x="18" y="222" width="63" height="4.5" rx="2.25" fill="#88888866"/>
+          <text x="18" y="221" fill="#888" style="font-family:monospace;font-size:7px">Portal: ~15%</text>
+          <!-- Advisor range -->
+          <rect x="180" y="222" width="126" height="4.5" rx="2.25" fill="#1a3d2099"/>
+          <text x="200" y="221" fill="#1a3d20" style="font-family:monospace;font-size:7px">Advisor: ~55–65%</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: Addepar product pages, design principles blog post (addepar.com), Q3 2024 product newsletter, client spotlight (View Capital Advisors), press release on Dashboards launch (Sept 2024). Marketing screenshots available at addepar.com.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>Three distinct surfaces: a configurable Dashboard home (launched 2024, drag-and-drop widget canvas), a portfolio record view (the primary work surface, record-oriented with drill-down from portfolio to transaction level), and a client portal (a separate, simplified read-only view for end investors). The Dashboards launch in 2024 moved the platform from a record-first model toward a dashboard-home model — notable because it arrived later than in comparable products.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>Clearest split in this category: the client portal and the advisor interface are explicitly different products. Within the advisor tier, role-based access control determines what data is visible, but the interface structure is consistent. Addepar's five published design principles — "guide beginners, empower experts" and "progressive disclosure" — are the right instincts. The execution is user-configured depth rather than system-inferred depth.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>Progressive disclosure by navigation and user configuration. The dashboard home surfaces a summary; clicking through reveals detail; drilling down reveals transaction level. Users configure which widgets appear on the dashboard home. The Addison AI assistant (context-aware, knows your current view) surfaces answers in natural language — reducing the need to navigate the platform's depth structure. Same pattern as every other platform in this research: AI as overlay, not as rethought architecture.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison — closest design philosophy match in research</span>
+      <p>Addepar's stated design principles are the most direct parallel to AIF's theory: "Guide beginners, empower experts — make products that are easy and intuitive but flexible enough to allow users to dive deep." That is a paraphrase of the Minimal→Maximal scale. The recognition is there. The difference is in how it's resolved.</p>
+      <p>Addepar resolves it through user configuration (you decide your depth) and progressive disclosure (the system adds depth when you navigate into it). AIF resolves it through system inference (the framework already knows your depth from context). These are different answers to the same question. Addepar's answer requires an expert user willing to configure; AIF's scales to users who don't know they need to configure anything.</p>
+    </div>
+  </article>
+
+  <!-- WEALTH MATRIX -->
+  <div class="cat-matrix" id="wealth-matrix" data-nav-id="wealth-matrix">
+    <h3>Category 2 summary</h3>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Role-awareness</th>
+          <th>IA adaptability</th>
+          <th>Complexity handling</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>BlackRock Aladdin</td>
+          <td><span class="scr scr-m">Medium</span> Role-specific applications; Vision vs Focus product split</td>
+          <td><span class="scr scr-l">Low</span> Separate app per function; shared data layer</td>
+          <td>Specialisation — purpose-built apps + Addison AI overlay</td>
+        </tr>
+        <tr>
+          <td>Salesforce FSC</td>
+          <td><span class="scr scr-h">High</span> Admin-configured — excellent when built well</td>
+          <td><span class="scr scr-m">Medium</span> Lightning layout engine; configurable per role</td>
+          <td>Configuration — admin-built layouts; Einstein AI overlay</td>
+        </tr>
+        <tr>
+          <td>Addepar</td>
+          <td><span class="scr scr-m">Medium</span> Client portal vs advisor interface; RBAC within advisor tier</td>
+          <td><span class="scr scr-m">Medium</span> New dashboards flexible; underlying record view fixed</td>
+          <td>Progressive disclosure + user configuration; Addison AI overlay</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="matrix-note">AI assistants appear in all three platforms in this category (Aladdin Addison, Addepar Addison, Salesforce Einstein). In each case the AI is an overlay on a fixed interface — the same instinct resolving the same problem, across competitors who have not coordinated on the approach.</p>
+  </div>
+</section>
+
+<!-- ========== CATEGORY 3: TRADING & MARKETS ========== -->
+<section class="category-section" id="cat-trading">
+  <div class="category-header trading">
+    <span class="cat-num">Category 03</span>
+    <h2>Trading &amp; Capital Markets</h2>
+    <p>Two platforms serving traders, analysts, and portfolio managers in capital markets. Both are publicly documented to a greater degree than the corporate banking platforms — and both represent an extreme version of the complexity challenge. Note: Symphony AyasdiAI, listed in the brief, has pivoted to financial crime detection (AML/compliance) and is not a trading interface. It is documented separately at the end of this category.</p>
+  </div>
+
+  <!-- BLOOMBERG -->
+  <article class="profile" id="bloomberg" data-nav-id="bloomberg">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag trading">Trading &amp; Markets</span>
+        <span class="confidence">Confidence: High — Bloomberg UX team has published extensively on design process</span>
+      </div>
+    </div>
+    <h3>Bloomberg Terminal</h3>
+    <p class="profile-tagline">The dominant financial data and analytics platform. 320,000+ subscribers. ~$28,000/user/year. 33% of the global financial data market. The platform has not fundamentally changed its interaction model — command codes and user-assembled workspaces — since the 1980s. Bloomberg's CTO describes this as a deliberate choice.</p>
+
+    <div class="screen-card doc">
+      <div class="screen-badge doc"><span class="badge-dot"></span>Documented — Bloomberg UX team has published detailed first-party accounts</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#0a0a0a"/>
+          <!-- Command bar -->
+          <rect x="0" y="0" width="560" height="30" fill="#1a1a1a"/>
+          <rect x="8" y="6" width="360" height="18" rx="2" fill="#111" stroke="#333" stroke-width="1"/>
+          <text x="16" y="19" fill="#f5c518" style="font-family:monospace;font-size:10px">EQUITY RESEARCH &lt;GO&gt;</text>
+          <text x="390" y="19" fill="#666" style="font-family:monospace;font-size:9px">EQS &lt;GO&gt;  |  GBM &lt;GO&gt;  |  SRCH &lt;GO&gt;</text>
+
+          <!-- Launchpad panels -->
+          <rect x="4" y="34" width="268" height="88" rx="1" fill="#111" stroke="#333" stroke-width="1"/>
+          <text x="12" y="46" fill="#ff9d00" style="font-family:monospace;font-size:8.5px">MACRO HEAT MAP</text>
+          <rect x="8" y="50" width="256" height="8" rx="1" fill="#1a3a1a"/>
+          <rect x="8" y="60" width="256" height="8" rx="1" fill="#3a1a1a"/>
+          <rect x="8" y="70" width="256" height="8" rx="1" fill="#1a1a3a"/>
+          <rect x="8" y="80" width="256" height="8" rx="1" fill="#2a2a1a"/>
+          <rect x="8" y="90" width="256" height="8" rx="1" fill="#1a3a3a"/>
+          <text x="12" y="118" fill="#666" style="font-family:monospace;font-size:8px">Global market data — user has placed here</text>
+
+          <rect x="276" y="34" width="278" height="88" rx="1" fill="#111" stroke="#333" stroke-width="1"/>
+          <text x="284" y="46" fill="#ff9d00" style="font-family:monospace;font-size:8.5px">AAPL US EQUITY</text>
+          <text x="284" y="60" fill="#00cc44" style="font-family:monospace;font-size:10px">$215.43 ▲ 1.24%</text>
+          <rect x="284" y="66" width="262" height="40" rx="1" fill="#0a0a0a" stroke="#222" stroke-width="1"/>
+          <text x="398" y="90" fill="#555" text-anchor="middle" style="font-family:monospace;font-size:8px">chart area</text>
+          <text x="284" y="118" fill="#666" style="font-family:monospace;font-size:8px">Specific security — user has placed here</text>
+
+          <rect x="4" y="126" width="176" height="74" rx="1" fill="#111" stroke="#333" stroke-width="1"/>
+          <text x="12" y="138" fill="#ff9d00" style="font-family:monospace;font-size:8.5px">PORTFOLIO OVERVIEW</text>
+          <text x="12" y="154" fill="#ccc" style="font-family:monospace;font-size:8.5px">P&amp;L today: +$42,318</text>
+          <text x="12" y="167" fill="#aaa" style="font-family:monospace;font-size:8px">5 positions · 2 alerts</text>
+          <text x="12" y="194" fill="#666" style="font-family:monospace;font-size:8px">User-selected panel</text>
+
+          <rect x="184" y="126" width="188" height="74" rx="1" fill="#111" stroke="#333" stroke-width="1"/>
+          <text x="192" y="138" fill="#ff9d00" style="font-family:monospace;font-size:8.5px">IB MESSAGING</text>
+          <text x="192" y="154" fill="#888" style="font-family:monospace;font-size:8px">Bloomberg's proprietary</text>
+          <text x="192" y="166" fill="#888" style="font-family:monospace;font-size:8px">communications network</text>
+          <text x="192" y="178" fill="#555" style="font-family:monospace;font-size:8px">Industry-standard for traders</text>
+          <text x="192" y="194" fill="#666" style="font-family:monospace;font-size:8px">User-selected panel</text>
+
+          <rect x="376" y="126" width="178" height="74" rx="1" fill="#111" stroke="#333" stroke-width="1"/>
+          <text x="384" y="138" fill="#ff9d00" style="font-family:monospace;font-size:8.5px">TOP NEWS</text>
+          <text x="384" y="154" fill="#888" style="font-family:monospace;font-size:8px">Bloomberg + 1,500 sources</text>
+          <text x="384" y="166" fill="#888" style="font-family:monospace;font-size:8px">Real-time · prioritised</text>
+          <text x="384" y="194" fill="#666" style="font-family:monospace;font-size:8px">User-selected panel</text>
+
+          <!-- User note -->
+          <text x="280" y="214" fill="#555" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Launchpad: the user has assembled this workspace from thousands of available functions</text>
+
+          <!-- Scale bar -->
+          <text x="18" y="226" fill="#444" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="226" fill="#444" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="228" width="450" height="2.5" rx="1.25" fill="#333"/>
+          <rect x="18" y="228" width="414" height="2.5" rx="1.25" fill="#f5c518"/>
+          <text x="432" y="226" fill="#f5c518" style="font-family:monospace;font-size:8px">92%</text>
+          <text x="80" y="226" fill="#666" style="font-family:monospace;font-size:8px">← always maximal · user composes which maximal</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: Bloomberg UX team articles (bloomberg.com/company/stories/), Bloomberg UX blog (bloomberg.com/ux/), Bloomberg CTO interviews, published academic analysis of Terminal UX. Public screenshots and demos widely available in financial media and educational contexts.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>Command-code navigation. Users type four-letter function codes (mnemonics) to access thousands of discrete analytical functions. The home surface — "Launchpad" — is a user-composed multi-panel canvas: the user arranges whichever Terminal functions they want across a multi-monitor setup. There is no system-defined home page. Bloomberg's Head of UX states it explicitly: "What's mainly changed about the Terminal is how it is integrated into your overall workflow and how it is contextually relevant to the other things you're doing."</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>None. Every subscriber has access to the same Terminal, subject to their firm's data subscriptions (not role-based interface control). A junior analyst and a senior trader see the same command interface. The difference is what they know how to use. The Terminal trusts users to compose their own context — and those users invest months acquiring the command vocabulary needed to do so efficiently.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>Bloomberg's CTO has stated the Terminal's design philosophy directly: "We're hiding complexity — and we do it across thousands of functions, across domains and asset classes, so the user has a seamless experience." The mechanism: surface-level simplicity through function decomposition (each function is a contained, understandable tool), with the full scope of the platform accessible through a command-line knowledge system. The complexity is moved to the user's command vocabulary. Academic research confirms this is partly intentional: users take pride in mastering the Terminal's complexity, and that mastery is a professional status signal.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison</span>
+      <p>Bloomberg is the most extreme example of moving complexity to the user. It works precisely because its user base is a small, expert, highly motivated cohort who use the platform continuously and can invest months in learning it. The model is categorically unsuitable for corporate banking, where users are diverse, expertise levels vary widely, and the platform must work from day one.</p>
+      <p>Bloomberg's stated design goal — "contextual relevance to the other things you're doing" — is exactly what AIF's alert strip and action grid are designed to provide structurally. Bloomberg achieves contextual relevance through user composition (you arrange the context yourself). AIF achieves it through system inference (the framework knows your context). These are different architectures for the same instinct. Bloomberg's version requires years of training. AIF's doesn't.</p>
+    </div>
+  </article>
+
+  <!-- LSEG WORKSPACE -->
+  <article class="profile" id="lseg" data-nav-id="lseg">
+    <div class="profile-top">
+      <div class="profile-tags">
+        <span class="cat-tag trading">Trading &amp; Markets</span>
+        <span class="confidence">Confidence: Medium — platform in mid-transition; some public documentation available</span>
+      </div>
+    </div>
+    <h3>LSEG Workspace</h3>
+    <p class="profile-tagline">Bloomberg's closest competitor. Replaced Refinitiv Eikon in June 2025 as LSEG's primary financial data platform. ~20% of the financial data market. Web-native and cloud-first — no dedicated hardware required. Marketed as a more modern, more accessible alternative to the Terminal model.</p>
+
+    <div class="screen-card doc">
+      <div class="screen-badge doc"><span class="badge-dot"></span>Documented structure — public marketing materials and third-party product analysis available</div>
+      <div class="screen-diagram">
+        <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+          <rect width="560" height="230" fill="#f8f8f8"/>
+          <!-- Nav bar -->
+          <rect x="0" y="0" width="560" height="36" fill="#1c2951"/>
+          <text x="16" y="24" fill="white" style="font-family:monospace;font-size:11px;font-weight:500">LSEG Workspace</text>
+          <!-- Search bar -->
+          <rect x="160" y="8" width="260" height="20" rx="10" fill="white"/>
+          <text x="172" y="22" fill="#999" style="font-family:monospace;font-size:9px">Search instruments, news, analytics...</text>
+          <text x="282" y="22" fill="#1c2951" text-anchor="middle" style="font-family:monospace;font-size:9px">&#128269;</text>
+
+          <!-- AI discovery strip -->
+          <rect x="0" y="36" width="560" height="20" fill="#f0f4ff"/>
+          <text x="280" y="50" text-anchor="middle" fill="#1c2951" style="font-family:monospace;font-size:8.5px">LSEG Digest AI — recommended: UK Budget reaction · GBP/USD flash · Q3 earnings season</text>
+
+          <!-- Module panels (user-arranged) -->
+          <rect x="8" y="62" width="272" height="90" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <rect x="8" y="62" width="272" height="16" rx="2" fill="#1c2951"/>
+          <text x="144" y="74" fill="white" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Markets Overview</text>
+          <text x="16" y="92" fill="#555" style="font-family:monospace;font-size:8.5px">Global indices · FX · commodities</text>
+          <rect x="16" y="100" width="256" height="6" rx="1" fill="#f0f0f0"/>
+          <rect x="16" y="110" width="200" height="6" rx="1" fill="#f0f0f0"/>
+          <rect x="16" y="120" width="230" height="6" rx="1" fill="#f0f0f0"/>
+          <text x="144" y="146" fill="#888" text-anchor="middle" style="font-family:monospace;font-size:8px">User has placed this module here</text>
+
+          <rect x="288" y="62" width="264" height="90" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <rect x="288" y="62" width="264" height="16" rx="2" fill="#1c2951"/>
+          <text x="420" y="74" fill="white" text-anchor="middle" style="font-family:monospace;font-size:8.5px">Reuters News</text>
+          <text x="296" y="92" fill="#555" style="font-family:monospace;font-size:8.5px">Exclusive Reuters coverage</text>
+          <text x="296" y="104" fill="#bbb" style="font-family:monospace;font-size:8px">LSEG's key differentiator vs Bloomberg</text>
+          <text x="420" y="146" fill="#888" text-anchor="middle" style="font-family:monospace;font-size:8px">User has placed this module here</text>
+
+          <rect x="8" y="158" width="168" height="52" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="16" y="173" fill="#555" style="font-family:monospace;font-size:8.5px">FX Data module</text>
+          <text x="16" y="186" fill="#bbb" style="font-family:monospace;font-size:8px">Currency rates · analytics</text>
+          <text x="16" y="204" fill="#aaa" style="font-family:monospace;font-size:8px">User-placed</text>
+
+          <rect x="184" y="158" width="164" height="52" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="192" y="173" fill="#555" style="font-family:monospace;font-size:8.5px">CodeBook (Python)</text>
+          <text x="192" y="186" fill="#bbb" style="font-family:monospace;font-size:8px">Analysis inside platform</text>
+          <text x="192" y="204" fill="#aaa" style="font-family:monospace;font-size:8px">User-placed</text>
+
+          <rect x="356" y="158" width="196" height="52" rx="2" fill="white" stroke="#ddd" stroke-width="1"/>
+          <text x="364" y="173" fill="#555" style="font-family:monospace;font-size:8.5px">Fixed income analytics</text>
+          <text x="364" y="186" fill="#bbb" style="font-family:monospace;font-size:8px">Bonds · yields · credit</text>
+          <text x="364" y="204" fill="#aaa" style="font-family:monospace;font-size:8px">User-placed</text>
+
+          <!-- Scale bar -->
+          <text x="18" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px">Minimal</text>
+          <text x="468" y="221" fill="#aaa" style="font-family:monospace;font-size:8.5px;text-anchor:end">Maximal</text>
+          <rect x="18" y="223" width="450" height="2.5" rx="1.25" fill="#e0e0e0"/>
+          <rect x="18" y="223" width="315" height="2.5" rx="1.25" fill="#1c2951"/>
+          <text x="333" y="221" fill="#1c2951" style="font-family:monospace;font-size:8px">70%</text>
+          <text x="80" y="221" fill="#555" style="font-family:monospace;font-size:8px">← high depth; more accessible than Bloomberg</text>
+        </svg>
+      </div>
+      <div class="screen-note">Sources: LSEG product page (lseg.com/workspace), third-party product analysis (NextSprints, GlobalDatabase.com), Bloomberg vs LSEG comparison articles, Wikipedia (Eikon). Platform was in active transition at time of research (Eikon fully retired June 2025). Integration seams between legacy and new interface reported by users.</div>
+    </div>
+
+    <div class="dim">
+      <h4>IA structure</h4>
+      <p>A modular panel-based layout with a prominent search bar as the primary navigation mechanism. Users configure which modules appear in their workspace using drag-and-drop — more accessible than Bloomberg's command codes, but structurally similar: the user composes their own context from a library of available modules. LSEG Digest (AI) recommends relevant content based on the user's current context. The Microsoft partnership (announced as part of the platform) integrates Microsoft 365 tools into the Workspace environment.</p>
+    </div>
+    <div class="dim">
+      <h4>Role-awareness</h4>
+      <p>Data subscription-level scoping, similar to Bloomberg. A former LSEG Product Leader stated directly: "Workspace's biggest strength is its data breadth and quality, but its main challenge is simplifying the user experience for new adopters without compromising power-user functionality." This is the Minimal→Maximal problem stated by a platform insider, unresolved. The current answer is progressive onboarding and AI discovery, not structural adaptation.</p>
+    </div>
+    <div class="dim">
+      <h4>Complexity handling</h4>
+      <p>More accessible version of Bloomberg's model. The drag-and-drop configuration reduces the learning curve for workspace composition. LSEG Digest and AI-powered recommendations partially solve the "what do I need to see?" problem — the system surfaces relevant content without requiring the user to know the function codes. The platform was still in mid-transition at the time of this research, with users reporting inconsistencies between legacy Eikon features and the new Workspace design language.</p>
+    </div>
+    <div class="aif-box">
+      <span class="aif-label">AIF comparison</span>
+      <p>LSEG Workspace is a more accessible delivery of Bloomberg's model. The interaction model is more modern (drag-and-drop vs command codes), the technology stack is more current (web-native, cloud-first), and the Microsoft integration reduces context switching. But the fundamental model — give users access to everything, let them decide what to look at — is unchanged.</p>
+      <p>The LSEG Digest AI recommendation layer is the most interesting feature for AIF comparison: it is an early attempt to have the system surface relevant content without requiring user navigation. This is the right instinct — and it is emerging independently across Bloomberg (in development direction), LSEG, Aladdin, Addepar, and Salesforce. The market is converging on AI as the answer to the complexity problem. AIF's argument is that AI-as-overlay is the wrong answer — the right answer is baking context-awareness into the architecture itself.</p>
+    </div>
+  </article>
+
+  <!-- TRADING MATRIX -->
+  <div class="cat-matrix" id="trading-matrix" data-nav-id="trading-matrix">
+    <h3>Category 3 summary</h3>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Role-awareness</th>
+          <th>IA adaptability</th>
+          <th>Complexity handling</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Bloomberg Terminal</td>
+          <td><span class="scr scr-n">None</span> Uniform access; data subscriptions control scope only</td>
+          <td><span class="scr scr-n">None</span> User-composed workspace; no system-driven layout</td>
+          <td>Expertise transfer — complexity moved to user's command vocabulary; mastery as status signal</td>
+        </tr>
+        <tr>
+          <td>LSEG Workspace</td>
+          <td><span class="scr scr-l">Low</span> Data subscription scope; AI discovery suggestions</td>
+          <td><span class="scr scr-l">Low</span> More accessible composition model; same fundamental architecture</td>
+          <td>User configuration + AI discovery — more accessible than Bloomberg, same model</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="matrix-note">Symphony AyasdiAI, listed in the research brief, has pivoted entirely to financial crime detection (AML/compliance). It is no longer a trading or capital markets interface platform. The research gap it leaves is a mid-market trading data platform comparison (FactSet would be the natural replacement). This is flagged here rather than papered over.</p>
+  </div>
+</section>
+
+<!-- SYNTHESIS -->
+<section class="synthesis" id="synthesis" data-nav-id="synthesis">
+  <h2>What the market shows</h2>
+
+  <p>Nine platforms. Three sectors. The problem is the same everywhere. The answers fall into four distinct patterns — and none of them is what AIF is building.</p>
+
+  <div class="finding">
+    <h4>Pattern 1 — Restriction</h4>
+    <p>Control what users can see through entitlements and permissions. The interface doesn't change for different users — their access does. JPMorgan ACCESS, HSBCnet, and Barclays iPortal all operate primarily in this mode. It is technically straightforward and regulatorily defensible. It does not solve the complexity problem for the user — it relocates it to the admin layer and the access control team.</p>
+  </div>
+
+  <div class="finding">
+    <h4>Pattern 2 — Designed adaptation</h4>
+    <p>Build different interface states for different user types, maintain them manually. CitiDirect BE is the only platform in this research attempting genuine persona-differentiated interface design. The approach is sophisticated and, within its scope, effective. It is also brittle: every new user type requires a new design effort, and the maintenance burden compounds over time. Complexity has moved to the UX team's workload rather than to the system.</p>
+  </div>
+
+  <div class="finding">
+    <h4>Pattern 3 — User configuration</h4>
+    <p>Give users tools to configure their own depth and composition. Addepar's dashboard, Salesforce FSC's Lightning layouts, LSEG Workspace's drag-and-drop modules. The right instinct — users should be able to access appropriate depth — delivered with the wrong mechanism. Users who don't know what to configure get the default. Users who misconfigure get the wrong experience. Expert users benefit; everyone else is left to figure it out.</p>
+  </div>
+
+  <div class="finding">
+    <h4>Pattern 4 — Expertise transfer</h4>
+    <p>Move the complexity to the user's head. Bloomberg Terminal. This is the most extreme version, and it works for its specific user base — expert professionals who invest months in learning the platform and derive status from mastering it. It is not transferable to corporate banking, where users are diverse, expertise levels vary, and the platform must work from day one.</p>
+  </div>
+
+  <p style="margin-top:2rem">There is a fifth pattern beginning to emerge. Every category in this research has seen platforms add AI assistants in the last twelve to eighteen months: Aladdin Addison, Addepar Addison, Salesforce Einstein Copilot, LSEG Digest. In each case the AI is positioned as a natural language interface to a fixed platform — you can ask it questions about what you're looking at, but the platform itself doesn't change. This is the market converging on AI as a workaround for interfaces that weren't designed to be context-aware.</p>
+
+  <p>The AI workaround is better than nothing. It is not the same as building context-awareness into the architecture. AIF's claim is structural: the interface itself should scale to whoever is using it and whatever they need to do at that moment. Not because an AI layer interprets their questions, but because the framework already knows the answer.</p>
+
+  <div class="closing-box">
+    <p>The competitive landscape confirms the problem AIF is designed to solve. It also confirms that no platform in corporate banking has solved it. CitiDirect is the closest — and the gap between their approach and AIF's is the architectural argument for building AIF.</p>
+    <p>The complexity can't be destroyed. The question is who deals with it. The market's current answers: <em>the admin team, the UX team, the user themselves, or no one.</em> AIF's answer is the system.</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p>AIF Project — Competitor Research · March 2026 · Three categories profiled. Insurance (Guidewire, Duck Creek) deferred pending scope confirmation.</p>
+</footer>
+
+</main>
+
+<script>
+// Nav scroll tracking
+const sections = document.querySelectorAll('[data-nav-id]');
+const navLinks = document.querySelectorAll('.nav-link[data-target]');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-link[data-target="${entry.target.dataset.navId}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// Progress bar
+const progress = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+  progress.style.transform = `scaleX(${Math.min(p, 1)})`;
+}, { passive: true });
+</script>
+</body>
+</html>
