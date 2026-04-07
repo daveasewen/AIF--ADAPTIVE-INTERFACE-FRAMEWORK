@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIF — Adaptive Interface Framework</title>
+<style>
+:root {
+  --red:    #DB0011;
+  --black:  #000000;
+  --white:  #FFFFFF;
+  --grey-1: #F3F3F3;
+  --grey-2: #EDEDED;
+  --grey-3: #D7D8D6;
+  --grey-4: #B7B7B7;
+  --grey-5: #9B9B9B;
+  --grey-6: #767676;
+  --grey-7: #545454;
+  --grey-8: #333333;
+  --dark:   #111111;
+  --dark-s: #1A1A1A;
+  --dark-b: #2C2C2C;
+  --font:   "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --sidebar: 240px;
+  --footer:  52px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; font-family: var(--font); background: var(--grey-8); }
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.shell {
+  display: flex;
+  height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar);
+  min-width: var(--sidebar);
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease, min-width 0.3s ease;
+  overflow: hidden;
+  z-index: 10;
+}
+.sidebar.collapsed {
+  width: 0;
+  min-width: 0;
+}
+.sidebar-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid #222;
+  flex-shrink: 0;
+}
+.sidebar-eyebrow {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.sidebar-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--red);
+}
+.sidebar-title {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--grey-4);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: #333; }
+.nav-group-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #444;
+  padding: 12px 16px 4px;
+  display: block;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.nav-item:hover { background: #1a1a1a; }
+.nav-item.active {
+  border-left-color: var(--red);
+  background: #181818;
+}
+.nav-num {
+  font-size: 9px;
+  font-weight: 700;
+  color: #444;
+  letter-spacing: 0.1em;
+  min-width: 18px;
+  flex-shrink: 0;
+}
+.nav-item.active .nav-num { color: var(--red); }
+.nav-label {
+  font-size: 11px;
+  color: var(--grey-6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-item.active .nav-label { color: var(--grey-4); }
+.nav-item.appendix .nav-label { color: #444; }
+.nav-item.appendix.active .nav-label { color: var(--grey-6); }
+
+/* ── MAIN ────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── TOPBAR ──────────────────────────────────────────────── */
+.topbar {
+  height: 44px;
+  background: var(--grey-8);
+  border-bottom: 1px solid #222;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+.toggle-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4.5px;
+  cursor: pointer;
+  background: none;
+  border: 1px solid #333;
+  padding: 0;
+  flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+.toggle-btn:hover { border-color: #555; }
+.toggle-btn span {
+  display: block;
+  height: 1px;
+  background: var(--grey-5);
+  transition: width 0.2s;
+}
+.toggle-btn span:nth-child(1) { width: 14px; }
+.toggle-btn span:nth-child(2) { width: 10px; }
+.toggle-btn span:nth-child(3) { width: 14px; }
+.topbar-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-6);
+}
+.topbar-slide-title {
+  font-size: 11px;
+  color: var(--grey-7);
+  margin-left: auto;
+  letter-spacing: 0.02em;
+}
+
+/* ── STAGE ───────────────────────────────────────────────── */
+.stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grey-8);
+  overflow: hidden;
+  padding: 20px;
+}
+.slide-scaler {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  transform-origin: center center;
+}
+
+/* ── SLIDE BASE ──────────────────────────────────────────── */
+.slide {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  display: none;
+  overflow: hidden;
+}
+.slide.active { display: block; }
+.slide.dark { background: var(--dark); }
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.footer {
+  height: var(--footer);
+  background: var(--grey-8);
+  border-top: 1px solid #222;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+.nav-btn {
+  height: 32px;
+  padding: 0 20px;
+  background: none;
+  border: 1px solid #333;
+  color: var(--grey-5);
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-btn:hover:not(:disabled) { border-color: var(--grey-5); color: var(--grey-3); }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn.primary {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+}
+.nav-btn.primary:hover:not(:disabled) { background: var(--grey-3); border-color: var(--grey-3); }
+.slide-counter {
+  font-size: 11px;
+  color: var(--grey-6);
+  letter-spacing: 0.06em;
+}
+.slide-counter span { color: var(--grey-4); }
+.progress-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #333;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.dot.active { background: var(--red); transform: scale(1.3); }
+.dot.appendix { background: #252525; }
+.dot:hover { background: var(--grey-6); }
+
+
+/* ═══════════════════════════════════════════════════════════
+   SLIDE COMPONENT STYLES (inside .slide, scale 1280×720)
+══════════════════════════════════════════════════════════════ */
+
+/* Index label */
+.s-index {
+  position: absolute;
+  top: 22px; left: 44px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.s-index::before {
+  content: '';
+  display: inline-block;
+  width: 20px; height: 1px;
+  background: var(--red);
+}
+.slide.dark .s-index { color: var(--red); }
+
+/* Content areas */
+.s-body {
+  position: absolute;
+  top: 70px; left: 44px; right: 44px; bottom: 0;
+}
+.s-body.padded { top: 90px; }
+
+/* Headings */
+.s-h1 {
+  font-size: 54px;
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+.s-h2 {
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+.s-h3 {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--black);
+}
+.slide.dark .s-h1, .slide.dark .s-h2 { color: var(--white); }
+
+/* Body copy */
+.s-p {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--grey-7);
+  margin-top: 18px;
+}
+.s-p.strong {
+  color: var(--black);
+  font-weight: 500;
+  margin-top: 14px;
+}
+.slide.dark .s-p { color: #9B9B9B; }
+
+/* Label pattern */
+.s-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.s-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--red);
+  display: inline-block;
+}
+
+/* Rule */
+.s-rule {
+  width: 100%; height: 1px;
+  background: var(--grey-2);
+  position: absolute;
+  left: 0;
+}
+.s-rule.top { top: 60px; }
+
+/* Two-column split */
+.s-split {
+  display: grid;
+  gap: 0;
+}
+.s-split-5050 { grid-template-columns: 1fr 1px 1fr; }
+.s-split-4060 { grid-template-columns: 2fr 1px 3fr; }
+.s-split-6040 { grid-template-columns: 3fr 1px 2fr; }
+.s-divider {
+  width: 1px;
+  background: var(--grey-2);
+  margin: 0 44px;
+  align-self: stretch;
+}
+.slide.dark .s-divider { background: var(--dark-b); }
+
+/* Card */
+.s-card {
+  border-top: 1px solid var(--grey-2);
+  padding: 16px 0 0;
+  margin-bottom: 18px;
+}
+.s-card-num {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 8px;
+  display: block;
+}
+.s-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 5px;
+  line-height: 1.25;
+}
+.s-card-sub {
+  font-size: 13px;
+  color: var(--grey-7);
+  line-height: 1.5;
+}
+
+/* Dark card */
+.s-card-dark {
+  background: var(--dark-s);
+  padding: 24px;
+}
+.s-card-dark .s-card-num { color: var(--red); margin-bottom: 10px; }
+.s-card-dark .s-card-title { color: var(--white); font-size: 17px; margin-bottom: 10px; }
+.s-card-dark .s-card-sub { color: #B7B7B7; font-size: 14px; }
+.s-card-dark .s-card-status {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--grey-5);
+  margin-top: 14px;
+  display: block;
+}
+
+/* Pill */
+.s-pill {
+  display: inline-block;
+  border: 1px solid var(--grey-3);
+  padding: 4px 14px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-7);
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+
+/* Axis bar */
+.s-axis {
+  margin: 24px 0 20px;
+}
+.s-axis-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.s-axis-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--grey-6);
+}
+.s-axis-track {
+  height: 1px;
+  background: var(--grey-3);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.s-axis-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--grey-5);
+  flex-shrink: 0;
+  margin: 0 -4.5px;
+}
+.s-axis-dot.max { background: var(--red); }
+
+/* Table */
+.s-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+.s-table th {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey-6);
+  border-bottom: 1px solid var(--grey-2);
+  padding: 8px 12px 8px 0;
+  text-align: left;
+}
+.s-table td {
+  font-size: 15px;
+  color: var(--black);
+  border-bottom: 1px solid var(--grey-2);
+  padding: 16px 12px 16px 0;
+  vertical-align: top;
+  line-height: 1.45;
+}
+.s-table td.status {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--grey-6);
+}
+.s-table td.horizon { font-weight: 700; }
+
+/* Scope rows */
+.scope-box {
+  border: 1px solid var(--grey-2);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+.scope-box-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--black);
+  margin-bottom: 12px;
+  display: block;
+}
+.scope-box.later .scope-box-title { color: var(--grey-5); }
+.scope-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--grey-2);
+  font-size: 14px;
+  color: var(--black);
+}
+.scope-box.later .scope-row { color: var(--grey-6); }
+.scope-status {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+.scope-box.later .scope-status { color: var(--grey-5); }
+
+/* Grid (slide 6) */
+.s-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--grey-2);
+  margin-top: 28px;
+}
+.s-grid-cell {
+  background: var(--grey-1);
+  padding: 18px 16px;
+  text-align: center;
+}
+.s-grid-cell.highlight {
+  background: var(--white);
+  outline: 1.5px solid var(--red);
+  outline-offset: -1px;
+}
+.s-grid-cell-name {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--grey-5);
+  margin-bottom: 6px;
+  display: block;
+}
+.s-grid-cell.highlight .s-grid-cell-name { color: var(--red); }
+.s-grid-cell-scale {
+  font-size: 11px;
+  color: var(--grey-6);
+}
+.s-grid-cell.highlight .s-grid-cell-scale strong { color: var(--black); }
+
+/* Dash list */
+.s-dash-list { list-style: none; }
+.s-dash-list li {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--dark-b);
+  font-size: 15px;
+  line-height: 1.5;
+  color: #B7B7B7;
+}
+.s-dash-list li::before {
+  content: '—';
+  color: var(--grey-7);
+  flex-shrink: 0;
+}
+.s-dash-list li strong { color: var(--white); display: block; margin-bottom: 3px; }
+
+/* Appendix top rule */
+.app-rule {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.app-rule.red  { background: var(--red); }
+.app-rule.grey { background: var(--grey-7); }
+
+
+/* ── INTERACTIVE DEMO (Slide 7) ──────────────────────────── */
+.demo-area {
+  background: var(--grey-1);
+  border-top: 2px solid var(--black);
+  padding: 24px 28px 20px;
+  margin-top: 16px;
+}
+.demo-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.demo-scale-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--grey-6);
+  white-space: nowrap;
+}
+.demo-scale-label.max { color: var(--black); }
+input[type=range].demo-slider {
+  -webkit-appearance: none;
+  flex: 1;
+  height: 1px;
+  background: var(--grey-3);
+  outline: none;
+  cursor: pointer;
+}
+input[type=range].demo-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--red);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type=range].demo-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+.demo-modules {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.demo-module {
+  background: var(--white);
+  border-top: 2px solid var(--grey-2);
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.demo-module.active-border { border-top-color: var(--red); }
+.dm-min { padding: 12px; }
+.dm-med { padding: 16px; }
+.dm-max { padding: 18px; }
+
+/* Minimal state */
+.dm-area {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--grey-5); margin-bottom: 6px;
+}
+.dm-number {
+  font-size: 28px; font-weight: 200; color: var(--black); line-height: 1;
+  transition: font-size 0.4s ease;
+}
+.dm-status {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; margin-top: 6px;
+  transition: opacity 0.3s;
+}
+.dm-status.ok   { color: #2E7D32; }
+.dm-status.warn { color: var(--red); }
+.dm-status.info { color: var(--grey-6); }
+
+/* Median additions */
+.dm-subtitle {
+  font-size: 11px; color: var(--grey-7); margin-top: 4px; line-height: 1.4;
+  opacity: 0; max-height: 0; overflow: hidden;
+  transition: opacity 0.3s ease, max-height 0.4s ease;
+}
+.dm-divider {
+  height: 1px; background: var(--grey-2);
+  margin: 10px 0; opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.dm-rows { opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.3s ease, max-height 0.4s ease; }
+.dm-row {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--black); padding: 5px 0;
+  border-bottom: 1px solid var(--grey-2);
+}
+.dm-row span:last-child { color: var(--grey-6); }
+
+/* Maximal additions */
+.dm-actions { opacity: 0; max-height: 0; overflow: hidden; margin-top: 10px; transition: opacity 0.3s ease, max-height 0.4s ease; }
+.dm-action-btn {
+  display: inline-block; padding: 5px 12px;
+  background: var(--black); color: var(--white);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; margin-right: 6px; margin-top: 6px;
+  cursor: pointer; border: none; font-family: var(--font);
+}
+.dm-action-btn.ghost {
+  background: transparent; color: var(--black);
+  border-bottom: 1px solid var(--red);
+  padding-left: 0; padding-right: 0;
+}
+.dm-bar-wrap { margin-top: 8px; opacity: 0; transition: opacity 0.4s ease; }
+.dm-bar-label { font-size: 9px; color: var(--grey-6); margin-bottom: 4px; letter-spacing: 0.06em; }
+.dm-bar { height: 3px; background: var(--grey-2); }
+.dm-bar-fill { height: 3px; background: var(--red); transition: width 0.5s ease; }
+</style>
+</head>
+<body>
+
+<div class="shell" id="shell">
+
+  <!-- ── SIDEBAR ─────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-eyebrow">AIF</div>
+      <div class="sidebar-title">Adaptive Interface Framework</div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-group-label">Presentation</span>
+      <div class="nav-item active" onclick="goTo(0)" id="nav-0">
+        <span class="nav-num">01</span><span class="nav-label">Cover</span>
+      </div>
+      <div class="nav-item" onclick="goTo(1)" id="nav-1">
+        <span class="nav-num">02</span><span class="nav-label">The problem</span>
+      </div>
+      <div class="nav-item" onclick="goTo(2)" id="nav-2">
+        <span class="nav-num">03</span><span class="nav-label">Competing demands</span>
+      </div>
+      <div class="nav-item" onclick="goTo(3)" id="nav-3">
+        <span class="nav-num">04</span><span class="nav-label">One scale</span>
+      </div>
+      <div class="nav-item" onclick="goTo(4)" id="nav-4">
+        <span class="nav-num">05</span><span class="nav-label">The second scale</span>
+      </div>
+      <div class="nav-item" onclick="goTo(5)" id="nav-5">
+        <span class="nav-num">06</span><span class="nav-label">Both scales together</span>
+      </div>
+      <div class="nav-item" onclick="goTo(6)" id="nav-6">
+        <span class="nav-num">07</span><span class="nav-label">In practice</span>
+      </div>
+      <div class="nav-item" onclick="goTo(7)" id="nav-7">
+        <span class="nav-num">08</span><span class="nav-label">How it works</span>
+      </div>
+      <div class="nav-item" onclick="goTo(8)" id="nav-8">
+        <span class="nav-num">09</span><span class="nav-label">Where we start</span>
+      </div>
+      <div class="nav-item" onclick="goTo(9)" id="nav-9">
+        <span class="nav-num">10</span><span class="nav-label">Platform horizon</span>
+      </div>
+      <span class="nav-group-label">Appendix</span>
+      <div class="nav-item appendix" onclick="goTo(10)" id="nav-10">
+        <span class="nav-num">11</span><span class="nav-label">Extended context</span>
+      </div>
+      <div class="nav-item appendix" onclick="goTo(11)" id="nav-11">
+        <span class="nav-num">12</span><span class="nav-label">Frontier</span>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ── MAIN ───────────────────────────────── -->
+  <div class="main">
+    <div class="topbar">
+      <button class="toggle-btn" onclick="toggleSidebar()" title="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-title">AIF Deck</div>
+      <div class="topbar-slide-title" id="topbar-slide-title">Cover</div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="slide-scaler" id="scaler">
+
+        <!-- ══ SLIDE 01: COVER ═══════════════════════════ -->
+        <div class="slide dark active" id="slide-0">
+          <div class="s-index">01 · Cover</div>
+          <div style="position:absolute; top:70px; left:44px; right:44px; bottom:0; display:grid; grid-template-columns:3fr 1fr; align-items:center;">
+            <div>
+              <div class="s-h1" style="font-size:62px; font-weight:400; color:white; line-height:1.04;">Complexity can't<br>be destroyed,<br>only moved.</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:24px; align-items:flex-end; justify-content:center; padding-right:20px;">
+              <div style="width:52px; height:2px; background:var(--red);"></div>
+              <div style="width:52px; height:2px; background:var(--red);"></div>
+              <div style="width:52px; height:2px; background:var(--red);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 02: TESLER QUOTE ════════════════════ -->
+        <div class="slide dark" id="slide-1">
+          <div class="s-index">02 · The problem</div>
+          <div style="position:absolute; top:90px; left:44px; right:120px; bottom:0;">
+            <div style="font-size:36px; font-weight:300; font-style:italic; line-height:1.25; color:white; max-width:820px;">"Every application has an inherent amount of complexity that cannot be removed — only moved."</div>
+            <div style="margin-top:28px; font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--grey-5);">Larry Tesler · Computer scientist, 1980</div>
+            <div style="margin-top:44px; display:flex; align-items:flex-start; gap:16px;">
+              <div style="width:3px; min-height:52px; background:var(--red); flex-shrink:0; margin-top:2px;"></div>
+              <div style="font-size:16px; line-height:1.6; color:var(--grey-5);">The question is where the complexity goes. The Adaptive Interface Framework gives a specific answer.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 03: COMPETING DEMANDS ══════════════ -->
+        <div class="slide" id="slide-2">
+          <div class="s-rule top"></div>
+          <div class="s-index">03 · Competing demands</div>
+          <div class="s-body s-split s-split-5050" style="align-items:start; padding-right:0;">
+            <div style="padding-right:44px;">
+              <div class="s-h2">The same system.<br>Radically different people.</div>
+              <div class="s-p">A CFO monitoring liquidity positions. A payment clerk processing a batch run. A treasury analyst building a forecast. An admin team setting entitlements.</div>
+              <div class="s-p">Same platform. Competing demands on what it should show, how much depth it should expose, and what it should make easy.</div>
+              <div class="s-p strong">A single fixed interface can't serve all of them well. It serves the average — which means it serves no one well.</div>
+            </div>
+            <div class="s-divider"></div>
+            <div style="padding-left:44px;">
+              <div class="s-card">
+                <span class="s-card-num">Role A</span>
+                <div class="s-card-title">CFO</div>
+                <div class="s-card-sub">Needs signals, not data. Exceptions, not workflows. Five minutes, not fifty.</div>
+              </div>
+              <div class="s-card">
+                <span class="s-card-num">Role B</span>
+                <div class="s-card-title">Payment Clerk</div>
+                <div class="s-card-sub">Needs task queues, process flows, confirmation states. Depth, not summary.</div>
+              </div>
+              <div class="s-card">
+                <span class="s-card-num">Role C</span>
+                <div class="s-card-title">Treasury Analyst</div>
+                <div class="s-card-sub">Needs data at full resolution. Workspace tools. Everything visible, reconfigurable.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 04: ONE SCALE ═══════════════════════ -->
+        <div class="slide" id="slide-3">
+          <div class="s-rule top"></div>
+          <div class="s-index">04 · One scale</div>
+          <div class="s-body s-split s-split-5050" style="align-items:start;">
+            <div style="padding-right:44px;">
+              <div class="s-h2">From monitoring<br>to full workspace.</div>
+              <div class="s-p">Every module in the interface exists on a single scale. At one end: a status signal, one number, one decision prompt. At the other: a full workspace with data at depth and complete workflow tools.</div>
+              <div class="s-p strong">The framework moves a module to the right point on that scale based on who is using it and what they need to do.</div>
+            </div>
+            <div class="s-divider"></div>
+            <div style="padding-left:44px;">
+              <div class="s-axis">
+                <div class="s-axis-labels">
+                  <span class="s-axis-label">Minimal</span>
+                  <span class="s-axis-label">Maximal</span>
+                </div>
+                <div class="s-axis-track">
+                  <div class="s-axis-dot"></div>
+                  <div class="s-axis-dot"></div>
+                  <div class="s-axis-dot"></div>
+                  <div class="s-axis-dot max"></div>
+                </div>
+              </div>
+              <div class="s-card">
+                <span class="s-card-num">Minimal</span>
+                <div class="s-card-title">Status signal</div>
+                <div class="s-card-sub">One number. One alert. One action prompt. Nothing more.</div>
+              </div>
+              <div class="s-card">
+                <span class="s-card-num">Median</span>
+                <div class="s-card-title">Operational view</div>
+                <div class="s-card-sub">Summary with drill-down. Task queue. Contextual actions.</div>
+              </div>
+              <div class="s-card" style="border-top-color:var(--red);">
+                <span class="s-card-num" style="color:var(--red);">Maximal</span>
+                <div class="s-card-title">Full workspace</div>
+                <div class="s-card-sub">Data at depth. Configurable layout. Complete workflow tooling.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 05: SECOND SCALE ════════════════════ -->
+        <div class="slide" id="slide-4">
+          <div class="s-rule top"></div>
+          <div class="s-index">05 · The second scale</div>
+          <div class="s-body s-split s-split-5050" style="align-items:start;">
+            <div style="padding-right:44px;">
+              <div class="s-h2">One dashboard<br>isn't enough.</div>
+              <div class="s-p">The module scale tells you how deep each module goes. But a dashboard that shows everything — payments, accounts, liquidity, admin — at once collapses under its own weight, regardless of depth.</div>
+              <div class="s-p strong">The second scale organises the interface around what users are actually doing. Four operational areas. Each with its own surface.</div>
+            </div>
+            <div class="s-divider"></div>
+            <div style="padding-left:44px;">
+              <div class="s-card"><span class="s-card-num">01</span><div class="s-card-title">Payments</div><div class="s-card-sub">Initiation, authorisation, tracking, reconciliation.</div></div>
+              <div class="s-card"><span class="s-card-num">02</span><div class="s-card-title">Accounts</div><div class="s-card-sub">Balances, statements, position monitoring.</div></div>
+              <div class="s-card"><span class="s-card-num">03</span><div class="s-card-title">Admin</div><div class="s-card-sub">Entitlements, users, permissions, audit.</div></div>
+              <div class="s-card"><span class="s-card-num">04</span><div class="s-card-title">Liquidity</div><div class="s-card-sub">Cash positioning, forecasting, intraday flows.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 06: BOTH SCALES ═════════════════════ -->
+        <div class="slide" id="slide-5">
+          <div class="s-rule top"></div>
+          <div class="s-index">06 · Both scales together</div>
+          <div class="s-body" style="padding-top:10px;">
+            <div class="s-h2" style="max-width:780px;">This is what makes it a<br>framework, not a design.</div>
+            <div class="s-p" style="max-width:680px;">A single dashboard with personas is a design decision. Someone built it, someone maintains it, and every new user type requires a new design effort.</div>
+            <div class="s-p strong" style="max-width:680px;">Two scales — module depth and operational area — mean the system infers the right interface from context. It doesn't need to be rebuilt for each new user type. It scales.</div>
+            <div class="s-grid-4">
+              <div class="s-grid-cell">
+                <span class="s-grid-cell-name">Payments</span>
+                <div class="s-grid-cell-scale">Minimal → Maximal</div>
+              </div>
+              <div class="s-grid-cell">
+                <span class="s-grid-cell-name">Accounts</span>
+                <div class="s-grid-cell-scale">Minimal → Maximal</div>
+              </div>
+              <div class="s-grid-cell">
+                <span class="s-grid-cell-name">Admin</span>
+                <div class="s-grid-cell-scale">Minimal → Maximal</div>
+              </div>
+              <div class="s-grid-cell highlight">
+                <span class="s-grid-cell-name">Liquidity</span>
+                <div class="s-grid-cell-scale">Minimal → <strong>Maximal</strong></div>
+              </div>
+            </div>
+            <div style="margin-top:10px; font-size:11px; color:var(--grey-6); letter-spacing:0.03em;">Each operational area runs the full scale independently. A user in Payments at Minimal can simultaneously be in Liquidity at Maximal.</div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 07: INTERACTIVE DEMO ════════════════ -->
+        <div class="slide" id="slide-6">
+          <div class="s-rule top"></div>
+          <div class="s-index">07 · In practice</div>
+          <div class="s-body" style="padding-top:10px;">
+            <div class="s-split s-split-6040" style="align-items:start; margin-bottom:0;">
+              <div style="padding-right:44px;">
+                <div class="s-h2">The framework, running.</div>
+                <div class="s-p">Move the slider to see how each module scales. The same component, the right depth.</div>
+              </div>
+              <div class="s-divider"></div>
+              <div style="padding-left:44px; display:flex; align-items:center; gap:24px;">
+                <div style="font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--grey-6);">Scale</div>
+                <div style="font-size:13px; font-weight:700; color:var(--black);" id="scale-name">Minimal</div>
+              </div>
+            </div>
+            <div class="demo-area" style="margin-top:14px;">
+              <div class="demo-controls">
+                <span class="demo-scale-label">Minimal</span>
+                <input type="range" class="demo-slider" id="demo-slider" min="0" max="100" value="0">
+                <span class="demo-scale-label max">Maximal</span>
+              </div>
+              <div class="demo-modules" id="demo-modules">
+
+                <!-- Module 1: Payments -->
+                <div class="demo-module" id="dm-0">
+                  <div class="dm-min">
+                    <div class="dm-area">Payments</div>
+                    <div class="dm-number" id="dm-0-num">£2.4M</div>
+                    <div class="dm-status ok" id="dm-0-st">12 authorised today</div>
+                    <div class="dm-subtitle" id="dm-0-sub">3 pending authorisation · 1 exception</div>
+                    <div class="dm-divider" id="dm-0-div"></div>
+                    <div class="dm-rows" id="dm-0-rows">
+                      <div class="dm-row"><span>Batch run 09:00</span><span>Complete</span></div>
+                      <div class="dm-row"><span>CHAPS cut-off</span><span>14:30</span></div>
+                      <div class="dm-row"><span>Pending review</span><span>3</span></div>
+                    </div>
+                    <div class="dm-actions" id="dm-0-act">
+                      <div><button class="dm-action-btn">Initiate payment</button><button class="dm-action-btn ghost">View all</button></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Module 2: Accounts -->
+                <div class="demo-module" id="dm-1">
+                  <div class="dm-min">
+                    <div class="dm-area">Accounts</div>
+                    <div class="dm-number" id="dm-1-num">£18.7M</div>
+                    <div class="dm-status info" id="dm-1-st">Total balance</div>
+                    <div class="dm-subtitle" id="dm-1-sub">4 accounts · GBP / USD / EUR</div>
+                    <div class="dm-divider" id="dm-1-div"></div>
+                    <div class="dm-rows" id="dm-1-rows">
+                      <div class="dm-row"><span>GBP Current</span><span>£12.1M</span></div>
+                      <div class="dm-row"><span>USD Operating</span><span>$6.2M</span></div>
+                      <div class="dm-row"><span>EUR Notional</span><span>€3.8M</span></div>
+                    </div>
+                    <div class="dm-actions" id="dm-1-act">
+                      <div><button class="dm-action-btn">View statements</button><button class="dm-action-btn ghost">Reconcile</button></div>
+                      <div class="dm-bar-wrap" id="dm-1-bar">
+                        <div class="dm-bar-label">Utilisation vs. limit</div>
+                        <div class="dm-bar"><div class="dm-bar-fill" style="width:68%"></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Module 3: Liquidity -->
+                <div class="demo-module active-border" id="dm-2">
+                  <div class="dm-min">
+                    <div class="dm-area">Liquidity</div>
+                    <div class="dm-number" id="dm-2-num">£4.1M</div>
+                    <div class="dm-status warn" id="dm-2-st">Position below threshold</div>
+                    <div class="dm-subtitle" id="dm-2-sub">Intraday low: £3.8M at 11:42</div>
+                    <div class="dm-divider" id="dm-2-div"></div>
+                    <div class="dm-rows" id="dm-2-rows">
+                      <div class="dm-row"><span>Opening position</span><span>£5.2M</span></div>
+                      <div class="dm-row"><span>Net flows today</span><span>-£1.1M</span></div>
+                      <div class="dm-row"><span>Forecast close</span><span>£3.9M</span></div>
+                    </div>
+                    <div class="dm-actions" id="dm-2-act">
+                      <div><button class="dm-action-btn">Transfer funds</button><button class="dm-action-btn ghost">Forecast</button></div>
+                      <div class="dm-bar-wrap" id="dm-2-bar">
+                        <div class="dm-bar-label">vs. minimum threshold (£5M)</div>
+                        <div class="dm-bar"><div class="dm-bar-fill" style="width:82%; background:var(--red);"></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 08: HOW IT WORKS ════════════════════ -->
+        <div class="slide" id="slide-7">
+          <div class="s-rule top"></div>
+          <div class="s-index">08 · How it works</div>
+          <div class="s-body s-split s-split-5050" style="align-items:start;">
+            <div style="padding-right:44px;">
+              <div class="s-h2">Three layers<br>underneath.</div>
+              <div class="s-p">The framework operates at three levels of the interface simultaneously. You don't need to understand all three today — but it matters that they exist, because it's what separates a framework from a set of templates.</div>
+            </div>
+            <div class="s-divider"></div>
+            <div style="padding-left:44px;">
+              <div class="s-card"><span class="s-card-num">01</span><div class="s-card-title">Screen structure</div><div class="s-card-sub">Which surfaces exist and how they connect. The IA scales on two axes: breadth and depth.</div></div>
+              <div class="s-card"><span class="s-card-num">02</span><div class="s-card-title">Page sections</div><div class="s-card-sub">Within each screen, sections appear, collapse, or expand based on context and entitlement.</div></div>
+              <div class="s-card"><span class="s-card-num">03</span><div class="s-card-title">Components</div><div class="s-card-sub">Each component has Minimal, Median, and Maximal states. Same component, right depth.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 09: WHERE WE START ══════════════════ -->
+        <div class="slide" id="slide-8">
+          <div class="s-rule top"></div>
+          <div class="s-index">09 · Where we start</div>
+          <div class="s-body s-split s-split-5050" style="align-items:start;">
+            <div style="padding-right:44px;">
+              <div class="s-h2">Payments.<br>Maximal first.</div>
+              <div class="s-p">We start with the operational area that has the most user diversity and the clearest complexity problem. Payments serves everyone from initiators to authorisers to reconciliation teams.</div>
+              <div class="s-p strong">Build Maximal first. Minimal and Median are derived — not separately designed.</div>
+            </div>
+            <div class="s-divider"></div>
+            <div style="padding-left:44px;">
+              <div class="scope-box">
+                <span class="scope-box-title">In scope — Phase 1</span>
+                <div class="scope-row"><span>Payments dashboard</span><span class="scope-status">In</span></div>
+                <div class="scope-row"><span>Payment initiation</span><span class="scope-status">In</span></div>
+                <div class="scope-row"><span>Authorisation workflow</span><span class="scope-status">In</span></div>
+                <div class="scope-row"><span>Status and tracking</span><span class="scope-status">In</span></div>
+                <div class="scope-row"><span>Accounts overview</span><span class="scope-status">In</span></div>
+              </div>
+              <div class="scope-box later">
+                <span class="scope-box-title">Later phases</span>
+                <div class="scope-row"><span>Liquidity area</span><span class="scope-status">Extended</span></div>
+                <div class="scope-row"><span>Admin area</span><span class="scope-status">Extended</span></div>
+                <div class="scope-row"><span>Frontier capabilities</span><span class="scope-status">Frontier</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 10: PLATFORM HORIZON ════════════════ -->
+        <div class="slide" id="slide-9">
+          <div class="s-rule top"></div>
+          <div class="s-index">10 · Platform horizon</div>
+          <div class="s-body" style="padding-top:10px;">
+            <div class="s-h2" style="max-width:700px;">Where this goes.</div>
+            <div class="s-p" style="max-width:620px;">The framework is designed to extend. What we build first establishes the structural logic. Everything after is an instance of the same pattern.</div>
+            <table class="s-table" style="margin-top:28px;">
+              <tr>
+                <th style="width:130px;">Horizon</th>
+                <th>Scope</th>
+                <th style="width:160px;">Status</th>
+              </tr>
+              <tr>
+                <td class="horizon">NOW</td>
+                <td>Payments area — full scale. Accounts overview. Core component library with three states per component.</td>
+                <td class="status">Phase 1</td>
+              </tr>
+              <tr>
+                <td class="horizon">EXTENDED</td>
+                <td>Liquidity area. Admin area. Cross-area navigation and context persistence.</td>
+                <td class="status">Phase 2–3</td>
+              </tr>
+              <tr>
+                <td class="horizon">FRONTIER</td>
+                <td>Contextual inference layer. Entitlement-driven auto-scaling. AI-assisted depth recommendation.</td>
+                <td class="status">Roadmap</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 11: APPENDIX A ═══════════════════════ -->
+        <div class="slide dark" id="slide-10">
+          <div class="app-rule red"></div>
+          <div class="s-index">11 · Appendix A</div>
+          <div class="s-body" style="padding-top:10px;">
+            <div class="s-label" style="color:var(--grey-5);">Extended context</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--dark-b); margin-top:14px;">
+              <div class="s-card-dark">
+                <span class="s-card-num">01 · Competitor context</span>
+                <div class="s-card-title">Competitor context</div>
+                <div class="s-card-sub">Nine platforms profiled across corporate banking, wealth management, and trading. No platform in corporate banking has solved the Minimal→Maximal problem. CitiDirect is closest — their approach is designed, not structural.</div>
+                <span class="s-card-status">Research complete</span>
+              </div>
+              <div class="s-card-dark">
+                <span class="s-card-num">02 · Design system</span>
+                <div class="s-card-title">Design system</div>
+                <div class="s-card-sub">Full brand system built: tokens, layout rules, component patterns, WCAG AA compliance. GTB aesthetic — Swiss grid, black copy, red as accent only. Deliverable-ready.</div>
+                <span class="s-card-status">Complete</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ SLIDE 12: APPENDIX B ═══════════════════════ -->
+        <div class="slide dark" id="slide-11">
+          <div class="app-rule grey"></div>
+          <div class="s-index">12 · Appendix B</div>
+          <div class="s-body" style="padding-top:10px;">
+            <div class="s-label" style="color:var(--grey-5);">Frontier capabilities</div>
+            <ul class="s-dash-list" style="margin-top:16px; max-width:760px;">
+              <li><div><strong>Contextual inference</strong>System infers appropriate depth from entitlement profile, recency, and task context. No user configuration required.</div></li>
+              <li><div><strong>Auto-scaling</strong>When a user's role changes, the interface scales without redesign. New role is a new context, not a new design brief.</div></li>
+              <li><div><strong>AI-assisted depth</strong>Surfaces the right operational area and depth based on time of day, account activity, and historical patterns.</div></li>
+              <li><div><strong>Cross-area persistence</strong>Context established in one operational area informs the starting state of another.</div></li>
+            </ul>
+            <div style="margin-top:28px; font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--grey-7);">Roadmap — not Phase 1 scope</div>
+          </div>
+        </div>
+
+      </div><!-- /scaler -->
+    </div><!-- /stage -->
+
+    <!-- ── FOOTER ─────────────────────────────── -->
+    <div class="footer">
+      <button class="nav-btn" id="btn-prev" onclick="prev()" disabled>← Prev</button>
+
+      <div style="display:flex; align-items:center; gap:20px;">
+        <div class="progress-dots" id="progress-dots"></div>
+        <div class="slide-counter"><span id="cur-num">1</span> / 12</div>
+      </div>
+
+      <button class="nav-btn primary" id="btn-next" onclick="next()">Next →</button>
+    </div>
+  </div><!-- /main -->
+
+</div><!-- /shell -->
+
+<script>
+// ─── STATE ──────────────────────────────────────────────────
+const TOTAL = 12;
+const TITLES = [
+  'Cover', 'The problem', 'Competing demands', 'One scale',
+  'The second scale', 'Both scales together', 'In practice',
+  'How it works', 'Where we start', 'Platform horizon',
+  'Extended context', 'Frontier'
+];
+
+let current = 0;
+let sidebarOpen = true;
+
+// ─── NAVIGATION ─────────────────────────────────────────────
+function goTo(n) {
+  if (n < 0 || n >= TOTAL) return;
+  document.getElementById(`slide-${current}`).classList.remove('active');
+  document.getElementById(`nav-${current}`).classList.remove('active');
+  current = n;
+  document.getElementById(`slide-${current}`).classList.add('active');
+  document.getElementById(`nav-${current}`).classList.add('active');
+  document.getElementById(`nav-${current}`).scrollIntoView({ block: 'nearest' });
+  updateChrome();
+}
+
+function prev() { goTo(current - 1); }
+function next() { goTo(current + 1); }
+
+function updateChrome() {
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === TOTAL - 1;
+  document.getElementById('cur-num').textContent = current + 1;
+  document.getElementById('topbar-slide-title').textContent = TITLES[current];
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i === current);
+  });
+}
+
+// ─── SIDEBAR ────────────────────────────────────────────────
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
+  setTimeout(scaleSlide, 310);
+}
+
+// ─── SCALING ────────────────────────────────────────────────
+function scaleSlide() {
+  const stage  = document.getElementById('stage');
+  const scaler = document.getElementById('scaler');
+  const sw = stage.clientWidth  - 40;
+  const sh = stage.clientHeight - 40;
+  const scaleX = sw / 1280;
+  const scaleY = sh / 720;
+  const scale  = Math.min(scaleX, scaleY);
+  scaler.style.transform = `scale(${scale})`;
+}
+
+// ─── PROGRESS DOTS ──────────────────────────────────────────
+function buildDots() {
+  const container = document.getElementById('progress-dots');
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i >= 10 ? ' appendix' : '') + (i === 0 ? ' active' : '');
+    d.title = TITLES[i];
+    d.onclick = () => goTo(i);
+    container.appendChild(d);
+  }
+}
+
+// ─── KEYBOARD ───────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next();
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prev();
+});
+
+// ─── INTERACTIVE DEMO ───────────────────────────────────────
+const slider = document.getElementById('demo-slider');
+const scaleName = document.getElementById('scale-name');
+
+function applyDemoState(val) {
+  // val: 0–100
+  const isMin = val < 33;
+  const isMed = val >= 33 && val < 67;
+  const isMax = val >= 67;
+
+  scaleName.textContent = isMin ? 'Minimal' : isMed ? 'Median' : 'Maximal';
+
+  for (let i = 0; i < 3; i++) {
+    const sub  = document.getElementById(`dm-${i}-sub`);
+    const div  = document.getElementById(`dm-${i}-div`);
+    const rows = document.getElementById(`dm-${i}-rows`);
+    const act  = document.getElementById(`dm-${i}-act`);
+    const num  = document.getElementById(`dm-${i}-num`);
+
+    // Subtitle visible at med+
+    sub.style.opacity  = isMin ? '0' : '1';
+    sub.style.maxHeight = isMin ? '0' : '60px';
+
+    // Divider at med+
+    div.style.opacity = isMin ? '0' : '1';
+
+    // Rows at med+
+    rows.style.opacity  = isMin ? '0' : '1';
+    rows.style.maxHeight = isMin ? '0' : '200px';
+
+    // Actions at max only
+    act.style.opacity  = isMax ? '1' : '0';
+    act.style.maxHeight = isMax ? '120px' : '0';
+
+    // Number size change
+    num.style.fontSize = isMin ? '28px' : isMed ? '24px' : '20px';
+
+    // Bar visible at max
+    const bar = document.getElementById(`dm-${i}-bar`);
+    if (bar) bar.style.opacity = isMax ? '1' : '0';
+  }
+}
+
+if (slider) {
+  slider.addEventListener('input', () => applyDemoState(parseInt(slider.value)));
+  applyDemoState(0);
+}
+
+// ─── RESIZE ──────────────────────────────────────────────────
+window.addEventListener('resize', scaleSlide);
+
+// ─── INIT ────────────────────────────────────────────────────
+buildDots();
+scaleSlide();
+updateChrome();
+</script>
+</body>
+</html>
