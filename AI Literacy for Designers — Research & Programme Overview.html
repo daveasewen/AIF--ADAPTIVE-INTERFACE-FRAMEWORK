@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Literacy for Designers — Research & Programme Overview</title>
+<style>
+:root {
+  --red:    #DB0011;
+  --red-2:  #BA1110;
+  --red-3:  #730014;
+  --black:  #000000;
+  --white:  #FFFFFF;
+  --grey-1: #F3F3F3;
+  --grey-2: #EDEDED;
+  --grey-3: #D7D8D6;
+  --grey-4: #B7B7B7;
+  --grey-5: #9B9B9B;
+  --grey-6: #767676;
+  --grey-7: #545454;
+  --grey-8: #333333;
+  --s1: 0.5rem;
+  --s2: 1rem;
+  --s3: 1.5rem;
+  --s4: 2rem;
+  --s5: 3rem;
+  --s6: 4rem;
+  --s7: 6rem;
+  --s8: 8rem;
+  --max-width: 1200px;
+  --gutter: 2rem;
+  --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--black);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Progress */
+#progress-bar { position: fixed; top: 0; left: 0; width: 100%; height: 2px; background: var(--grey-2); z-index: 200; }
+#progress-fill { height: 100%; background: var(--red); width: 0%; }
+
+/* Nav */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--grey-2);
+  height: 54px; display: flex; align-items: center;
+  padding: 0 var(--gutter);
+}
+.nav-inner {
+  max-width: var(--max-width); width: 100%; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-back {
+  font-size: 0.875rem; font-weight: 400; color: var(--grey-6);
+  text-decoration: none; letter-spacing: 0.05em;
+  display: flex; align-items: center; gap: var(--s1);
+}
+.nav-back::before { content: '←'; font-size: 12px; }
+.nav-back:hover { color: var(--black); }
+.nav-context { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-6); }
+.nav-links { display: flex; gap: var(--s4); list-style: none; }
+.nav-links a { font-size: 0.875rem; color: var(--grey-6); text-decoration: none; letter-spacing: 0.04em; }
+.nav-links a:hover { color: var(--black); }
+
+/* Wrap */
+.wrap { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* Label */
+.label {
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--red);
+  display: flex; align-items: center; gap: var(--s1);
+}
+.label::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--red); flex-shrink: 0; }
+
+/* Section rule */
+.section-rule { width: 100%; height: 1px; background: var(--grey-2); }
+
+/* Hero */
+.hero { padding: var(--s7) 0 var(--s6); }
+.hero-grid { display: grid; grid-template-columns: 5fr 4fr; gap: var(--s6); align-items: end; }
+.hero h1 {
+  font-size: 3.5625rem; font-weight: 700;
+  line-height: 1.05; letter-spacing: 0em;
+  margin-top: var(--s4);
+}
+.hero h1 em { font-style: normal; font-weight: 300; color: var(--grey-6); }
+.hero-sub {
+  font-size: 1.1875rem; font-weight: 400;
+  line-height: 1.5; color: var(--grey-7);
+  margin-top: var(--s4); max-width: 520px;
+}
+.hero-meta {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--s3) var(--s4);
+  border-top: 1px solid var(--grey-2);
+  padding-top: var(--s3); margin-top: var(--s5);
+}
+.meta-item label { display: block; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-5); margin-bottom: 4px; }
+.meta-item span { font-size: 0.875rem; color: var(--black); }
+
+.stat-block {
+  background: var(--grey-1);
+  border-left: 1px solid var(--grey-2);
+  padding: var(--s5);
+}
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s5) var(--s4); }
+.stat-num { font-size: 2.6875rem; font-weight: 200; line-height: 1; display: block; }
+.stat-lbl { font-size: 0.75rem; color: var(--grey-5); margin-top: 4px; display: block; line-height: 1.4; }
+.stat-note {
+  font-size: 0.75rem; color: var(--grey-6);
+  border-top: 1px solid var(--grey-3);
+  padding-top: var(--s2); margin-top: var(--s4); line-height: 1.5;
+}
+
+/* Proposition */
+.proposition-section { padding: var(--s7) 0; }
+.proposition { display: grid; grid-template-columns: 3fr 1px 4fr; gap: var(--s6); align-items: start; margin-top: var(--s4); }
+.prop-divider { background: var(--grey-2); min-height: 120px; align-self: stretch; }
+.proposition h2 { font-size: 2.125rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; }
+.prop-body p { font-size: 1rem; line-height: 1.75; color: var(--grey-7); }
+.prop-body p + p { margin-top: var(--s3); }
+.pull-quote { border-top: 1px solid var(--grey-2); padding-top: var(--s3); margin-top: var(--s5); }
+.pull-quote p { font-size: 1.1875rem; font-weight: 400; line-height: 1.5; color: var(--black); max-width: 620px; }
+
+/* Findings */
+.findings-section { padding: var(--s7) 0; background: var(--grey-1); }
+.findings-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--grey-2); border: 1px solid var(--grey-2);
+  margin-top: var(--s5);
+}
+.finding { background: var(--white); padding: var(--s5) var(--s4); transition: background 0.15s; }
+.finding:hover { background: var(--grey-1); }
+.finding-idx { font-size: 2.125rem; font-weight: 200; color: var(--grey-3); line-height: 1; margin-bottom: var(--s3); }
+.finding h3 { font-size: 1.1875rem; font-weight: 700; line-height: 1.2; margin-bottom: var(--s2); }
+.finding p { font-size: 0.875rem; line-height: 1.65; color: var(--grey-7); }
+.finding-src { margin-top: var(--s3); padding-top: var(--s2); border-top: 1px solid var(--grey-2); font-size: 0.75rem; color: var(--grey-6); }
+
+/* Dimension */
+.dim-section { padding: var(--s7) 0; }
+.dim-layout { display: grid; grid-template-columns: 1fr 2fr; gap: var(--s6); align-items: start; margin-top: var(--s4); }
+.dim-left .dim-idx { font-size: 3.5625rem; font-weight: 200; color: var(--grey-3); line-height: 1; display: block; margin-bottom: var(--s3); }
+.dim-left h2 { font-size: 2.125rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
+.dim-left p { font-size: 0.875rem; color: var(--grey-6); margin-top: var(--s2); line-height: 1.6; }
+.dim-right p { font-size: 1rem; line-height: 1.75; color: var(--grey-7); }
+.dim-right p + p { margin-top: var(--s3); }
+
+/* Curriculum table */
+.curriculum-table { width: 100%; border-collapse: collapse; margin-top: var(--s5); }
+.curriculum-table th {
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--grey-6);
+  text-align: left; padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--grey-2);
+}
+.curriculum-table td { padding: var(--s3); border-bottom: 1px solid var(--grey-2); font-size: 0.875rem; vertical-align: top; }
+.curriculum-table tr:hover td { background: var(--grey-1); }
+.td-num { font-size: 2.125rem; font-weight: 200; color: var(--grey-3); width: 64px; text-align: center; vertical-align: middle !important; }
+.td-mod strong { display: block; font-size: 1rem; font-weight: 700; color: var(--black); margin-bottom: 2px; }
+.td-mod span { font-size: 0.75rem; color: var(--grey-6); letter-spacing: 0.04em; }
+.ph-tag {
+  display: inline-block; font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 8px; background: var(--grey-1); color: var(--grey-6); margin-bottom: 4px;
+}
+.ph-tag.on { background: var(--black); color: var(--white); }
+
+/* Architecture */
+.arch-section { padding: var(--s7) 0; }
+.arch-layers {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--grey-2); border: 1px solid var(--grey-2);
+}
+.arch-layer { background: var(--white); padding: var(--s4) var(--s3); }
+.arch-layer:first-child { border-left: 3px solid var(--red); }
+.al-lbl { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey-5); margin-bottom: var(--s2); }
+.arch-layer h3 { font-size: 1.1875rem; font-weight: 700; margin-bottom: var(--s2); }
+.arch-layer p { font-size: 0.875rem; line-height: 1.6; color: var(--grey-7); }
+.format-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--grey-2);
+  border: 1px solid var(--grey-2); border-top: none;
+}
+.format-cell { background: var(--grey-1); padding: var(--s3); }
+.format-cell .fc-type { font-size: 1.1875rem; font-weight: 700; color: var(--black); margin-bottom: var(--s1); }
+.format-cell p { font-size: 0.75rem; color: var(--grey-6); line-height: 1.55; }
+
+/* Glossary */
+.gloss-section { padding: var(--s7) 0; background: var(--grey-1); }
+.gloss-tiers {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--grey-2); border: 1px solid var(--grey-2);
+  margin-top: var(--s5);
+}
+.tier { background: var(--white); padding: var(--s4) var(--s3); }
+.tier h4 {
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--grey-6);
+  padding-bottom: var(--s2); border-bottom: 1px solid var(--grey-2); margin-bottom: var(--s3);
+}
+.tier ul { list-style: none; }
+.tier ul li { font-size: 0.875rem; color: var(--black); padding: 5px 0; border-bottom: 1px solid var(--grey-2); line-height: 1.4; }
+.tier ul li:last-child { border-bottom: none; }
+
+/* Principles */
+.principles-section { padding: var(--s7) 0; }
+.principles-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--grey-2); border: 1px solid var(--grey-2);
+  margin-top: var(--s5);
+}
+.principle { background: var(--white); padding: var(--s4) var(--s3); transition: background 0.15s; }
+.principle:hover { background: var(--grey-1); }
+.p-num { font-size: 2.125rem; font-weight: 200; color: var(--grey-3); line-height: 1; margin-bottom: var(--s2); }
+.principle h3 { font-size: 1.1875rem; font-weight: 700; margin-bottom: var(--s1); }
+.principle p { font-size: 0.875rem; color: var(--grey-7); line-height: 1.6; }
+
+/* Build phases */
+.phases-section { padding: var(--s7) 0; }
+.phases-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s3); margin-top: var(--s5); }
+.phase-card { border-top: 2px solid var(--grey-2); padding-top: var(--s3); }
+.phase-card.current { border-top-color: var(--red); }
+.ph-lbl { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-5); display: block; margin-bottom: var(--s2); }
+.phase-card.current .ph-lbl { color: var(--red); }
+.phase-card h3 { font-size: 1.1875rem; font-weight: 700; margin-bottom: var(--s3); }
+.phase-card ul { list-style: none; font-size: 0.875rem; color: var(--grey-7); }
+.phase-card ul li { padding: 5px 0; border-bottom: 1px solid var(--grey-2); display: flex; gap: var(--s1); }
+.phase-card ul li::before { content: '→'; color: var(--grey-4); flex-shrink: 0; }
+.phase-card ul li:last-child { border-bottom: none; }
+.phase-card ul li.done { color: var(--grey-5); text-decoration: line-through; }
+.phase-card ul li.done::before { content: '✓'; color: var(--grey-4); }
+
+/* Footer */
+footer { padding: var(--s6) 0; background: var(--black); }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; }
+.footer-lft { font-size: 0.75rem; color: var(--grey-4); letter-spacing: 0.08em; }
+.footer-status { display: flex; align-items: center; gap: var(--s1); font-size: 0.75rem; color: var(--grey-4); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+/* Responsive */
+@media(max-width:960px){
+  .hero-grid,.proposition{grid-template-columns:1fr;}
+  .prop-divider{display:none;}
+  .stat-block{border-left:none;border-top:1px solid var(--grey-2);}
+  .dim-layout{grid-template-columns:1fr;}
+  .findings-grid,.gloss-tiers,.principles-grid,.phases-grid{grid-template-columns:1fr 1fr;}
+  .arch-layers,.format-row{grid-template-columns:1fr 1fr;}
+  nav .nav-links{display:none;}
+}
+@media(max-width:600px){
+  .findings-grid,.gloss-tiers,.principles-grid,.phases-grid,.arch-layers,.format-row{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-back" href="#">Programme Overview</a>
+    <span class="nav-context">AI Literacy · Phase 0</span>
+    <ul class="nav-links">
+      <li><a href="#research">Research</a></li>
+      <li><a href="#curriculum">Curriculum</a></li>
+      <li><a href="#architecture">System</a></li>
+      <li><a href="#glossary">Glossary</a></li>
+      <li><a href="#build">Build Plan</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="label">Internal Programme · April 2026</p>
+        <h1>AI Literacy<br>for <em>Designers</em></h1>
+        <p class="hero-sub">A research-backed self-paced learning programme for UX and UI teams — from absolute beginner to sound conceptual understanding.</p>
+        <div class="hero-meta">
+          <div class="meta-item"><label>Audience</label><span>UX &amp; UI Designers</span></div>
+          <div class="meta-item"><label>Format</label><span>Self-hosted · Browser-based</span></div>
+          <div class="meta-item"><label>Core modules</label><span>7 + branching deep-dives</span></div>
+          <div class="meta-item"><label>Status</label><span>Phase 0 — Planning</span></div>
+        </div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-grid">
+          <div><span class="stat-num">91%</span><span class="stat-lbl">Completion — gamified self-paced learning</span></div>
+          <div><span class="stat-num">20%</span><span class="stat-lbl">Completion — traditional LMS training</span></div>
+          <div><span class="stat-num">30%</span><span class="stat-lbl">Outcome improvement from feedback loops</span></div>
+          <div><span class="stat-num">40</span><span class="stat-lbl">Glossary terms — the vocabulary spine</span></div>
+        </div>
+        <p class="stat-note">Sources: 360Learning platform data; US Dept of Labor AI Literacy Framework Feb 2026; controlled study on AI-assisted learning feedback loops</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-rule"></div>
+
+<!-- PROPOSITION -->
+<section class="proposition-section" id="research">
+  <div class="wrap">
+    <p class="label">01 — Why this matters</p>
+    <div class="proposition">
+      <div>
+        <h2>The gap between using AI and understanding it</h2>
+      </div>
+      <div class="prop-divider"></div>
+      <div class="prop-body">
+        <p>Designers are already working with AI tools daily — Figma AI, Adobe Firefly, ChatGPT, generative image platforms. But tool familiarity is not the same as conceptual understanding. Without the underlying mental model, prompting becomes trial and error, and communication with developers and product leads gets vague.</p>
+        <p>Vague language creates ambiguous briefs. Ambiguous briefs create rework. This programme addresses the root cause: a shared vocabulary and a sound conceptual foundation, built specifically for visual thinkers in a design environment.</p>
+        <div class="pull-quote">
+          <p>"The biggest failure mode in AI training for non-technical teams is vague vocabulary creating false confidence. The glossary is not supplementary content — it is the product."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- FINDINGS -->
+<section class="findings-section">
+  <div class="wrap">
+    <p class="label">02 — Research Findings</p>
+    <h2 style="font-size:2.125rem;font-weight:700;line-height:1.15;max-width:600px;margin-top:var(--s4);">Six signals from the evidence on what makes AI literacy training work</h2>
+    <div class="findings-grid">
+      <div class="finding">
+        <div class="finding-idx">01</div>
+        <h3>Frame it as augmentation</h3>
+        <p>AI literacy lands best when it demonstrates AI enhancing human skills — creativity, judgement, domain expertise — not replacing them. Designers are naturally primed for this frame. It's the tools story they already live.</p>
+        <div class="finding-src">US Dept of Labor AI Literacy Framework, Feb 2026</div>
+      </div>
+      <div class="finding">
+        <div class="finding-idx">02</div>
+        <h3>Hands-on beats lecture</h3>
+        <p>Self-paced interactive learning consistently outperforms slide decks. The mechanism is immediate feedback — not content quality. People learn better when they get a response to their action now, not at the end of a session.</p>
+        <div class="finding-src">30% outcome improvement attributed to feedback loops alone</div>
+      </div>
+      <div class="finding">
+        <div class="finding-idx">03</div>
+        <h3>Microlearning works</h3>
+        <p>Short modules embedded in workflow context drive adoption. Traditional LMS-based training sees ~20% completion. Gamified, interaction-rich platforms with short sessions regularly hit 90%+. Duration and friction are the enemy.</p>
+        <div class="finding-src">360Learning / EdApp: 91% vs 20% completion rates</div>
+      </div>
+      <div class="finding">
+        <div class="finding-idx">04</div>
+        <h3>Progressive disclosure</h3>
+        <p>Foundational literacy first, then visible routes to go deeper. Branching paths let curious learners explore without making everyone feel gated. The core track should be completable; the deep dives should be irresistible.</p>
+        <div class="finding-src">DOL Framework: clear pathways from foundational to specialist</div>
+      </div>
+      <div class="finding">
+        <div class="finding-idx">05</div>
+        <h3>Language precision is the product</h3>
+        <p>The single most common failure mode in AI training for non-technical teams is vague vocabulary creating false confidence. Shared definitions don't just help people talk about AI — they are the literacy.</p>
+        <div class="finding-src">Primary design goal: eliminate ambiguity in team communication</div>
+      </div>
+      <div class="finding">
+        <div class="finding-idx">06</div>
+        <h3>Ethics cannot be an afterthought</h3>
+        <p>Most AI literacy programmes are pro-hype by default. A credible programme explicitly covers hallucination, bias, provenance, and ownership — giving learners frameworks for critical evaluation, not just caution. Scepticism is a skill.</p>
+        <div class="finding-src">Module 7 is structural, not a bolt-on</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- CURRICULUM -->
+<section class="dim-section" id="curriculum">
+  <div class="wrap">
+    <p class="label">03 — Curriculum</p>
+    <div class="dim-layout">
+      <div class="dim-left">
+        <span class="dim-idx">07</span>
+        <h2>Modules across three phases</h2>
+        <p>A structured progression from demystification to critical application. Optional deep-dives unlock from Module 3 — never blocking the core path.</p>
+      </div>
+      <div class="dim-right">
+        <table class="curriculum-table">
+          <thead>
+            <tr>
+              <th style="width:64px;">#</th>
+              <th>Module</th>
+              <th>Core concept</th>
+              <th>Designer hook</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-num">1</td>
+              <td class="td-mod"><span class="ph-tag on">Phase 1</span><strong>What is AI?</strong><span>Demystification — pattern recognition, not magic</span></td>
+              <td>Recognition, probability, prediction. The machine is not thinking.</td>
+              <td style="color:var(--grey-6);font-style:italic;">"Very good autocomplete."</td>
+            </tr>
+            <tr>
+              <td class="td-num">2</td>
+              <td class="td-mod"><span class="ph-tag on">Phase 1</span><strong>The Language of AI</strong><span>Shared vocabulary — eliminates ambiguity</span></td>
+              <td>Terms you're already hearing in briefs and stand-ups. Now defined.</td>
+              <td style="color:var(--grey-6);font-style:italic;">Backbone of the Glossary.</td>
+            </tr>
+            <tr>
+              <td class="td-num">3</td>
+              <td class="td-mod"><span class="ph-tag on">Phase 1</span><strong>How AI Learns</strong><span>Training, data, models, inference</span></td>
+              <td>Why outputs vary. Why some prompts work and others don't.</td>
+              <td style="color:var(--grey-6);font-style:italic;">Deep-dives unlock here.</td>
+            </tr>
+            <tr>
+              <td class="td-num">4</td>
+              <td class="td-mod"><span class="ph-tag">Phase 2</span><strong>Generative AI</strong><span>LLMs, image models, multimodal</span></td>
+              <td>What Midjourney, ChatGPT, Claude, Firefly actually are — and how they differ.</td>
+              <td style="color:var(--grey-6);font-style:italic;">"Tools you've used. Now understood."</td>
+            </tr>
+            <tr>
+              <td class="td-num">5</td>
+              <td class="td-mod"><span class="ph-tag">Phase 2</span><strong>Prompting as Design</strong><span>Prompt structure, iteration, constraints</span></td>
+              <td>Intentional prompting as a craft skill. The design brief is the closest analogy.</td>
+              <td style="color:var(--grey-6);font-style:italic;">"It's briefing. You do this already."</td>
+            </tr>
+            <tr>
+              <td class="td-num">6</td>
+              <td class="td-mod"><span class="ph-tag">Phase 2</span><strong>AI in the Workflow</strong><span>Real tools. Real use cases.</span></td>
+              <td>Where AI genuinely helps. Where it doesn't. Where human judgement must hold.</td>
+              <td style="color:var(--grey-6);font-style:italic;">Tool guides branch here.</td>
+            </tr>
+            <tr>
+              <td class="td-num">7</td>
+              <td class="td-mod"><span class="ph-tag">Phase 3</span><strong>Ethics &amp; Critical Thinking</strong><span>Bias, hallucination, provenance</span></td>
+              <td>The parts the hype skips. Scepticism as a skill worth building.</td>
+              <td style="color:var(--grey-6);font-style:italic;">Structural, not a bolt-on.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ARCHITECTURE -->
+<section class="arch-section" id="architecture">
+  <div class="wrap">
+    <p class="label">04 — System Architecture</p>
+    <div class="dim-layout">
+      <div class="dim-left">
+        <span class="dim-idx">04</span>
+        <h2>Layers of the learning system</h2>
+        <p>Self-hosted. No third-party platform. Built iteratively — one module at a time, reviewed and approved before the next begins.</p>
+      </div>
+      <div class="dim-right">
+        <div class="arch-layers">
+          <div class="arch-layer">
+            <div class="al-lbl">Layer 1</div>
+            <h3>Hub Dashboard</h3>
+            <p>Home screen. Progress tracker, module map, glossary access. Visual-first navigation. Always know where you are and what's next.</p>
+          </div>
+          <div class="arch-layer">
+            <div class="al-lbl">Layer 2</div>
+            <h3>Core Modules ×7</h3>
+            <p>Visual concept explanation → worked design example → quiz with immediate feedback → badge unlock. Completable in one sitting.</p>
+          </div>
+          <div class="arch-layer">
+            <div class="al-lbl">Layer 3</div>
+            <h3>Branching Deep-Dives</h3>
+            <p>Unlocked from Module 3. Optional — never blocking. LLMs in depth, image models, agents, tool-specific guides.</p>
+          </div>
+          <div class="arch-layer">
+            <div class="al-lbl">Layer 4</div>
+            <h3>Glossary</h3>
+            <p>30–40 terms. Accessible from any module at any time. Plain English + design-world analogy per term.</p>
+          </div>
+        </div>
+        <div class="format-row">
+          <div class="format-cell">
+            <div class="fc-type">.md</div>
+            <p>Core context, quiz content, glossary entries. Retrievable, version-controllable, session-portable.</p>
+          </div>
+          <div class="format-cell">
+            <div class="fc-type">.html</div>
+            <p>Interactive learner-facing deliverables. Visual-first. Self-contained — no server required.</p>
+          </div>
+          <div class="format-cell">
+            <div class="fc-type">Diagrams</div>
+            <p>SVG / Mermaid concept and system visualisations. One per module minimum.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- GLOSSARY -->
+<section class="gloss-section" id="glossary">
+  <div class="wrap">
+    <p class="label">05 — Glossary</p>
+    <div class="dim-layout">
+      <div class="dim-left">
+        <span class="dim-idx">40</span>
+        <h2>Terms across four tiers</h2>
+        <p>Every term: plain English definition, one design-world analogy, and a "don't confuse with" note where terms blur. The vocabulary spine of the whole programme.</p>
+      </div>
+      <div class="dim-right">
+        <div class="gloss-tiers">
+          <div class="tier">
+            <h4>Tier 1 — Basics</h4>
+            <ul>
+              <li>AI</li><li>Machine Learning</li><li>Algorithm</li>
+              <li>Model</li><li>Training</li><li>Data</li>
+              <li>Input / Output</li><li>Inference</li><li>Parameter</li>
+            </ul>
+          </div>
+          <div class="tier">
+            <h4>Tier 2 — Generative AI</h4>
+            <ul>
+              <li>LLM</li><li>Prompt</li><li>Token</li>
+              <li>Context Window</li><li>Temperature</li><li>Hallucination</li>
+              <li>Multimodal</li><li>Embedding</li>
+            </ul>
+          </div>
+          <div class="tier">
+            <h4>Tier 3 — Workflow</h4>
+            <ul>
+              <li>RAG</li><li>Fine-tuning</li><li>API</li>
+              <li>Agent</li><li>Tool Use</li><li>Latency</li>
+              <li>System Prompt</li><li>Zero-shot / Few-shot</li>
+            </ul>
+          </div>
+          <div class="tier">
+            <h4>Tier 4 — Critical</h4>
+            <ul>
+              <li>Bias</li><li>Provenance</li><li>Copyright</li>
+              <li>Synthetic Data</li><li>Model Collapse</li>
+              <li>Evaluation</li><li>Ground Truth</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- PRINCIPLES -->
+<section class="principles-section">
+  <div class="wrap">
+    <p class="label">06 — Design Principles</p>
+    <h2 style="font-size:2.125rem;font-weight:700;margin-top:var(--s4);max-width:560px;line-height:1.15;">Seven rules for how the programme is built</h2>
+    <div class="principles-grid">
+      <div class="principle"><div class="p-num">01</div><h3>Plain language first</h3><p>No jargon without a definition. Every technical term gets plain English before it gets a name.</p></div>
+      <div class="principle"><div class="p-num">02</div><h3>Visual before verbal</h3><p>Diagrams before paragraphs. Interactive before static. Graspable before readable.</p></div>
+      <div class="principle"><div class="p-num">03</div><h3>Design-world analogies</h3><p>Every concept gets a real design parallel — genuine structural similarities, not stretched metaphors.</p></div>
+      <div class="principle"><div class="p-num">04</div><h3>No dead ends</h3><p>Branching paths are always optional, never blocking. Curiosity is rewarded, not penalised.</p></div>
+      <div class="principle"><div class="p-num">05</div><h3>Short chunks</h3><p>No wall of text. Key terms called out explicitly. Scannable before readable.</p></div>
+      <div class="principle"><div class="p-num">06</div><h3>Immediate feedback</h3><p>Quizzes give reasons, not just scores. Wrong answers teach as much as right ones.</p></div>
+      <div class="principle"><div class="p-num">07</div><h3>Direct and warm</h3><p>Not corporate. Not patronising. Direct challenge over false reassurance. Trust the audience.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- BUILD PHASES -->
+<section class="phases-section" id="build">
+  <div class="wrap">
+    <p class="label">07 — Build Plan</p>
+    <div class="dim-layout">
+      <div class="dim-left">
+        <span class="dim-idx">04</span>
+        <h2>Phases. Iterative delivery.</h2>
+        <p>Each module reviewed and approved before the next begins. Dave acts as audience proxy throughout. No module ships until it's right.</p>
+      </div>
+      <div class="dim-right">
+        <div class="phases-grid">
+          <div class="phase-card current">
+            <span class="ph-lbl">Phase 0 — Now</span>
+            <h3>Foundation</h3>
+            <ul>
+              <li class="done">Research complete</li>
+              <li class="done">Curriculum map agreed</li>
+              <li class="done">System architecture</li>
+              <li>Glossary terms drafted</li>
+              <li>Visual style agreed</li>
+            </ul>
+          </div>
+          <div class="phase-card">
+            <span class="ph-lbl">Phase 1 — Next</span>
+            <h3>Foundation Modules</h3>
+            <ul>
+              <li>Hub / dashboard scaffold</li>
+              <li>Module 1: What is AI?</li>
+              <li>Module 2: Language of AI</li>
+              <li>Module 3: How AI Learns</li>
+            </ul>
+          </div>
+          <div class="phase-card">
+            <span class="ph-lbl">Phase 2</span>
+            <h3>Designer Modules</h3>
+            <ul>
+              <li>Module 4: Generative AI</li>
+              <li>Module 5: Prompting</li>
+              <li>Module 6: Workflow</li>
+              <li>Branching dives</li>
+            </ul>
+          </div>
+          <div class="phase-card">
+            <span class="ph-lbl">Phase 3</span>
+            <h3>Critical Layer</h3>
+            <ul>
+              <li>Module 7: Ethics</li>
+              <li>Glossary illustrated</li>
+              <li>Full system QA</li>
+              <li>Facilitator guide</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <span class="footer-lft">AI Literacy for Designers · Phase 0 · April 2026 · Internal</span>
+      <div class="footer-status"><div class="status-dot"></div>In development</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const fill = document.getElementById('progress-fill');
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    fill.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
+  });
+</script>
+</body>
+</html>
